@@ -19,7 +19,7 @@ export function ManagerNav({ current }: { current: string }) {
     { href: "/manager", label: "Dashboard", key: "dashboard" },
     { href: "/manager/employes", label: "Employés", key: "employes" },
     { href: "/manager/planning", label: "Planning", key: "planning" },
-    { href: "/manager/heures", label: "Heures", key: "heures" },
+    { href: "/manager/heures", label: "Valider heures", key: "heures" },
     { href: "/manager/compta", label: "Compta", key: "compta" },
   ];
 

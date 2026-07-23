@@ -53,10 +53,16 @@ export default async function ManagerDashboardPage() {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-            <p className="text-sm text-zinc-500">En attente</p>
+            <p className="text-sm text-zinc-500">En attente de confirmation</p>
             <p className="mt-1 text-3xl font-semibold text-amber-700">
               {pendingCount}
             </p>
+            <Link
+              href="/manager/heures"
+              className="mt-2 inline-block text-sm font-medium text-emerald-800 underline-offset-2 hover:underline"
+            >
+              Confirmer les heures →
+            </Link>
           </div>
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
             <p className="text-sm text-zinc-500">Heures du mois</p>

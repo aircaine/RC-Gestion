@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
   adjustTimeEntryAction,
+  confirmAllPastAssignmentsAction,
+  confirmAllPendingAction,
+  confirmPastAssignmentAction,
   confirmTimeEntryAction,
   rejectTimeEntryAction,
 } from "@/modules/time-tracking/actions";
@@ -145,5 +148,105 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
         </form>
       ) : null}
     </div>
+  );
+}
+
+export function ConfirmAllPendingButton({ ids }: { ids: string[] }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
+  if (ids.length === 0) return null;
+
+  return (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={() =>
+        startTransition(async () => {
+          await confirmAllPendingAction(ids);
+          router.refresh();
+        })
+      }
+      className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+    >
+      {pending ? "Confirmation…" : `Tout confirmer (${ids.length})`}
+    </button>
+  );
+}
+
+type PastAssignment = {
+  id: string;
+  employeeName: string;
+  slotName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  hours: number;
+};
+
+export function PastAssignmentCard({ item }: { item: PastAssignment }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="font-medium text-zinc-900">{item.employeeName}</p>
+          <p className="text-sm text-zinc-600">
+            {item.slotName} · {item.date} · {item.startTime} → {item.endTime} ·{" "}
+            <span className="font-medium">{item.hours}h</span>
+          </p>
+          <p className="mt-1 text-xs text-amber-800">
+            Service passé sans déclaration — valider selon le planning
+          </p>
+        </div>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() =>
+            startTransition(async () => {
+              setError(null);
+              const result = await confirmPastAssignmentAction(item.id);
+              if (!result.ok) {
+                setError(result.error);
+                return;
+              }
+              router.refresh();
+            })
+          }
+          className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+        >
+          {pending ? "…" : "Confirmer les heures"}
+        </button>
+      </div>
+      {error ? (
+        <p className="mt-2 text-sm text-rose-700">{error}</p>
+      ) : null}
+    </div>
+  );
+}
+
+export function ConfirmAllPastAssignmentsButton({ ids }: { ids: string[] }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
+  if (ids.length === 0) return null;
+
+  return (
+    <button
+      type="button"
+      disabled={pending}
+      onClick={() =>
+        startTransition(async () => {
+          await confirmAllPastAssignmentsAction(ids);
+          router.refresh();
+        })
+      }
+      className="rounded-lg border border-emerald-700 px-3 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50 disabled:opacity-60"
+    >
+      {pending ? "Validation…" : `Valider tout le planning passé (${ids.length})`}
+    </button>
   );
 }

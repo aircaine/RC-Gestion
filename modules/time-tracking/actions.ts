@@ -119,6 +119,147 @@ export async function confirmTimeEntryAction(
   return { ok: true };
 }
 
+export async function confirmAllPendingAction(
+  ids: string[],
+): Promise<ActionResult> {
+  await requireManager();
+  if (ids.length === 0) {
+    return { ok: false, error: "Aucune déclaration à confirmer" };
+  }
+
+  await prisma.timeEntry.updateMany({
+    where: { id: { in: ids }, status: "PENDING" },
+    data: { status: "CONFIRMED" },
+  });
+
+  revalidatePath("/manager");
+  revalidatePath("/manager/heures");
+  revalidatePath("/manager/compta");
+  revalidatePath("/heures");
+  return { ok: true };
+}
+
+/** Valide les heures d'une affectation passée (même sans déclaration employé). */
+export async function confirmPastAssignmentAction(
+  shiftId: string,
+): Promise<ActionResult> {
+  await requireManager();
+
+  const assignment = await prisma.shift.findUnique({
+    where: { id: shiftId },
+    include: { slot: true },
+  });
+  if (!assignment) {
+    return { ok: false, error: "Affectation introuvable" };
+  }
+  if (assignment.endsAt > new Date()) {
+    return { ok: false, error: "Ce service n’est pas encore terminé" };
+  }
+
+  const existing = await prisma.timeEntry.findFirst({
+    where: {
+      shiftId,
+      status: { in: ["PENDING", "CONFIRMED", "ADJUSTED"] },
+    },
+  });
+  if (existing) {
+    if (existing.status === "PENDING") {
+      await prisma.timeEntry.update({
+        where: { id: existing.id },
+        data: { status: "CONFIRMED" },
+      });
+    } else {
+      return { ok: false, error: "Heures déjà validées pour ce service" };
+    }
+  } else {
+    let hours: number;
+    try {
+      hours = calculateHours(assignment.startsAt, assignment.endsAt);
+    } catch (e) {
+      return {
+        ok: false,
+        error: e instanceof Error ? e.message : "Horaires invalides",
+      };
+    }
+
+    await prisma.timeEntry.create({
+      data: {
+        userId: assignment.userId,
+        shiftId: assignment.id,
+        startedAt: assignment.startsAt,
+        endedAt: assignment.endsAt,
+        hours,
+        source: "SCHEDULED",
+        status: "CONFIRMED",
+        managerNote: `Validé selon planning (${assignment.slot.name})`,
+      },
+    });
+  }
+
+  revalidatePath("/manager");
+  revalidatePath("/manager/heures");
+  revalidatePath("/manager/compta");
+  revalidatePath("/heures");
+  return { ok: true };
+}
+
+export async function confirmAllPastAssignmentsAction(
+  shiftIds: string[],
+): Promise<ActionResult> {
+  await requireManager();
+  if (shiftIds.length === 0) {
+    return { ok: false, error: "Aucun service à valider" };
+  }
+
+  const now = new Date();
+  const assignments = await prisma.shift.findMany({
+    where: {
+      id: { in: shiftIds },
+      endsAt: { lte: now },
+    },
+    include: { slot: true },
+  });
+
+  for (const assignment of assignments) {
+    const existing = await prisma.timeEntry.findFirst({
+      where: {
+        shiftId: assignment.id,
+        status: { in: ["PENDING", "CONFIRMED", "ADJUSTED"] },
+      },
+    });
+
+    if (existing) {
+      if (existing.status === "PENDING") {
+        await prisma.timeEntry.update({
+          where: { id: existing.id },
+          data: { status: "CONFIRMED" },
+        });
+      }
+      continue;
+    }
+
+    const hours = calculateHours(assignment.startsAt, assignment.endsAt);
+    await prisma.timeEntry.create({
+      data: {
+        userId: assignment.userId,
+        shiftId: assignment.id,
+        startedAt: assignment.startsAt,
+        endedAt: assignment.endsAt,
+        hours,
+        source: "SCHEDULED",
+        status: "CONFIRMED",
+        managerNote: `Validé selon planning (${assignment.slot.name})`,
+      },
+    });
+  }
+
+  revalidatePath("/manager");
+  revalidatePath("/manager/heures");
+  revalidatePath("/manager/compta");
+  revalidatePath("/heures");
+  return { ok: true };
+}
+
 export async function rejectTimeEntryAction(
   id: string,
   managerNote?: string,
