@@ -35,7 +35,8 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   shifts          Shift[]
-  timeEntries     TimeEntry[]
+  timeEntries     TimeEntry[] @relation("EmployeeEntries")
+  validatedEntries TimeEntry[] @relation("ValidatedBy")
 }
 
 /// Créneau / horaire d'ouverture (ex. Midi 11h–15h un jour donné)
@@ -71,21 +72,25 @@ model Shift {
 }
 
 model TimeEntry {
-  id           String          @id @default(cuid())
-  userId       String
-  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shiftId      String?
-  shift        Shift?          @relation(fields: [shiftId], references: [id], onDelete: SetNull)
-  startedAt    DateTime
-  endedAt      DateTime
-  hours        Float
-  source       TimeEntrySource @default(FREE)
-  status       TimeEntryStatus @default(PENDING)
-  employeeNote String?
-  managerNote  String?
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  id            String          @id @default(cuid())
+  userId        String
+  user          User            @relation("EmployeeEntries", fields: [userId], references: [id], onDelete: Cascade)
+  shiftId       String?
+  shift         Shift?          @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+  startedAt     DateTime
+  endedAt       DateTime
+  hours         Float
+  source        TimeEntrySource @default(FREE)
+  status        TimeEntryStatus @default(PENDING)
+  employeeNote  String?
+  managerNote   String?
+  validatedById String?
+  validatedBy   User?           @relation("ValidatedBy", fields: [validatedById], references: [id], onDelete: SetNull)
+  validatedAt   DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   @@index([userId, startedAt])
   @@index([status])
+  @@index([validatedById])
 }

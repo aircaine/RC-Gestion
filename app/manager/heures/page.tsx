@@ -70,7 +70,10 @@ export default async function ManagerHeuresPage({
         ...(userId ? { userId } : {}),
         startedAt: { gte: from, lte: to },
       },
-      include: { user: true },
+      include: {
+        user: true,
+        validatedBy: { select: { name: true } },
+      },
       orderBy: { startedAt: "desc" },
       take: 150,
     }),
@@ -132,7 +135,7 @@ export default async function ManagerHeuresPage({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-              Confirmer les heures
+              Heures
             </h1>
             <p className="text-sm text-zinc-500">
               Validez les heures déclarées ou les services passés du planning.
@@ -249,6 +252,7 @@ export default async function ManagerHeuresPage({
                   employeeName: e.user.name,
                   employeeNote: e.employeeNote,
                   managerNote: e.managerNote,
+                  validatedByName: e.validatedBy?.name ?? null,
                   status: e.status,
                 }}
               />
