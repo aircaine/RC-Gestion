@@ -290,12 +290,17 @@ export async function adjustTimeEntryAction(
   const date = String(formData.get("date") ?? "");
   const startTime = String(formData.get("startTime") ?? "");
   const endTime = String(formData.get("endTime") ?? "");
-  const managerNote = String(formData.get("managerNote") ?? "").trim() || null;
+  const managerNoteRaw = formData.get("managerNote");
 
   const entry = await prisma.timeEntry.findUnique({ where: { id } });
-  if (!entry || (entry.status !== "PENDING" && entry.status !== "CONFIRMED")) {
-    return { ok: false, error: "Déclaration non modifiable" };
+  if (!entry) {
+    return { ok: false, error: "Déclaration introuvable" };
   }
+
+  const managerNote =
+    managerNoteRaw === null
+      ? entry.managerNote
+      : String(managerNoteRaw).trim() || null;
 
   const startedAt = combineDateAndTime(date, startTime);
   let endedAt = combineDateAndTime(date, endTime);
@@ -319,10 +324,28 @@ export async function adjustTimeEntryAction(
       startedAt,
       endedAt,
       hours,
-      status: "ADJUSTED",
+      status: entry.status === "PENDING" ? "PENDING" : "ADJUSTED",
       managerNote,
     },
   });
+
+  revalidatePath("/manager");
+  revalidatePath("/manager/heures");
+  revalidatePath("/manager/compta");
+  revalidatePath("/heures");
+  return { ok: true };
+}
+
+export async function deleteTimeEntryAction(
+  id: string,
+): Promise<ActionResult> {
+  await requireManager();
+  const entry = await prisma.timeEntry.findUnique({ where: { id } });
+  if (!entry) {
+    return { ok: false, error: "Déclaration introuvable" };
+  }
+
+  await prisma.timeEntry.delete({ where: { id } });
 
   revalidatePath("/manager");
   revalidatePath("/manager/heures");

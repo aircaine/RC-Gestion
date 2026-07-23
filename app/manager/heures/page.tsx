@@ -11,7 +11,6 @@ import {
   PastAssignmentCard,
   TimeEntryReviewCard,
 } from "@/components/time-entry-review";
-import { StatusBadge, HoursLabel } from "@/components/status-badge";
 
 export const dynamic = "force-dynamic";
 
@@ -238,44 +237,22 @@ export default async function ManagerHeuresPage({
               Aucune déclaration sur cette période.
             </p>
           ) : (
-            entries.map((e) =>
-              e.status === "PENDING" ? (
-                <TimeEntryReviewCard
-                  key={e.id}
-                  entry={{
-                    id: e.id,
-                    date: format(e.startedAt, "yyyy-MM-dd"),
-                    startTime: format(e.startedAt, "HH:mm"),
-                    endTime: format(e.endedAt, "HH:mm"),
-                    hours: e.hours,
-                    employeeName: e.user.name,
-                    employeeNote: e.employeeNote,
-                    status: e.status,
-                  }}
-                />
-              ) : (
-                <div
-                  key={e.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3"
-                >
-                  <div>
-                    <p className="font-medium text-zinc-900">{e.user.name}</p>
-                    <p className="text-sm text-zinc-600">
-                      {format(e.startedAt, "yyyy-MM-dd")} ·{" "}
-                      {format(e.startedAt, "HH:mm")} →{" "}
-                      {format(e.endedAt, "HH:mm")} ·{" "}
-                      <HoursLabel hours={e.hours} />
-                    </p>
-                    {e.managerNote ? (
-                      <p className="text-xs text-zinc-500">
-                        Manager : {e.managerNote}
-                      </p>
-                    ) : null}
-                  </div>
-                  <StatusBadge status={e.status} />
-                </div>
-              ),
-            )
+            entries.map((e) => (
+              <TimeEntryReviewCard
+                key={e.id}
+                entry={{
+                  id: e.id,
+                  date: format(e.startedAt, "yyyy-MM-dd"),
+                  startTime: format(e.startedAt, "HH:mm"),
+                  endTime: format(e.endedAt, "HH:mm"),
+                  hours: e.hours,
+                  employeeName: e.user.name,
+                  employeeNote: e.employeeNote,
+                  managerNote: e.managerNote,
+                  status: e.status,
+                }}
+              />
+            ))
           )}
         </section>
       </main>

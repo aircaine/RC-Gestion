@@ -8,8 +8,10 @@ import {
   confirmAllPendingAction,
   confirmPastAssignmentAction,
   confirmTimeEntryAction,
+  deleteTimeEntryAction,
   rejectTimeEntryAction,
 } from "@/modules/time-tracking/actions";
+import { StatusBadge } from "@/components/status-badge";
 
 type Entry = {
   id: string;
@@ -19,6 +21,7 @@ type Entry = {
   hours: number;
   employeeName: string;
   employeeNote: string | null;
+  managerNote?: string | null;
   status: string;
 };
 
@@ -54,7 +57,13 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
           {entry.employeeNote ? (
             <p className="mt-1 text-sm text-zinc-500">Note : {entry.employeeNote}</p>
           ) : null}
+          {entry.managerNote ? (
+            <p className="mt-1 text-xs text-zinc-500">
+              Manager : {entry.managerNote}
+            </p>
+          ) : null}
         </div>
+        <StatusBadge status={entry.status} />
       </div>
 
       {error ? (
@@ -63,43 +72,63 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
         </p>
       ) : null}
 
-      {entry.status === "PENDING" ? (
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => run(() => confirmTimeEntryAction(entry.id))}
-            className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
-          >
-            Confirmer
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => setShowAdjust((v) => !v)}
-            className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-60"
-          >
-            Corriger
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() =>
-              run(() => rejectTimeEntryAction(entry.id, rejectNote))
+      <div className="mt-3 flex flex-wrap gap-2">
+        {entry.status === "PENDING" ? (
+          <>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => run(() => confirmTimeEntryAction(entry.id))}
+              className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+            >
+              Confirmer
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() =>
+                run(() => rejectTimeEntryAction(entry.id, rejectNote))
+              }
+              className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+            >
+              Rejeter
+            </button>
+            <input
+              type="text"
+              value={rejectNote}
+              onChange={(e) => setRejectNote(e.target.value)}
+              placeholder="Motif rejet (optionnel)"
+              className="min-w-[12rem] flex-1 rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+            />
+          </>
+        ) : null}
+
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => setShowAdjust((v) => !v)}
+          className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-60"
+        >
+          Modifier
+        </button>
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => {
+            if (
+              !window.confirm(
+                "Supprimer définitivement ces heures ?",
+              )
+            ) {
+              return;
             }
-            className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
-          >
-            Rejeter
-          </button>
-          <input
-            type="text"
-            value={rejectNote}
-            onChange={(e) => setRejectNote(e.target.value)}
-            placeholder="Motif rejet (optionnel)"
-            className="min-w-[12rem] flex-1 rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
-          />
-        </div>
-      ) : null}
+            run(() => deleteTimeEntryAction(entry.id));
+          }}
+          className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+        >
+          Supprimer
+        </button>
+      </div>
 
       {showAdjust ? (
         <form
@@ -136,6 +165,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
             name="managerNote"
             type="text"
             placeholder="Note manager"
+            defaultValue={entry.managerNote ?? ""}
             className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
           />
           <button
@@ -143,7 +173,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
             disabled={pending}
             className="rounded-lg bg-sky-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-sky-800 disabled:opacity-60"
           >
-            Enregistrer l&apos;ajustement
+            Enregistrer
           </button>
         </form>
       ) : null}
