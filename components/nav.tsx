@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { logoutAction } from "@/modules/auth/actions";
+import { Logo } from "@/components/logo";
 
 export function LogoutButton() {
   return (
     <form action={logoutAction}>
-      <button
-        type="submit"
-        className="text-sm text-zinc-600 underline-offset-2 hover:text-zinc-900 hover:underline"
-      >
+      <button type="submit" className="rc-btn rc-btn-ghost text-sm">
         Déconnexion
       </button>
     </form>
@@ -24,30 +22,31 @@ export function ManagerNav({ current }: { current: string }) {
   ];
 
   return (
-    <header className="border-b border-zinc-200 bg-white">
+    <header className="sticky top-0 z-30 border-b border-line/80 bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-        <div className="flex items-center gap-6">
-          <Link href="/manager" className="text-lg font-semibold tracking-tight text-zinc-900">
-            RC-Gestion
-          </Link>
-          <nav className="flex flex-wrap gap-1">
-            {links.map((link) => (
-              <Link
-                key={link.key}
-                href={link.href}
-                className={`rounded-md px-2.5 py-1.5 text-sm ${
-                  current === link.key
-                    ? "bg-zinc-900 text-white"
-                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+        <div className="flex min-w-0 flex-1 items-center gap-5">
+          <Logo href="/manager" size="sm" />
+          <nav className="flex flex-wrap gap-0.5" aria-label="Navigation manager">
+            {links.map((link) => {
+              const active = current === link.key;
+              return (
+                <Link
+                  key={link.key}
+                  href={link.href}
+                  className={`rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
+                    active
+                      ? "bg-forest text-white"
+                      : "text-muted hover:bg-forest-soft hover:text-ink"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="hidden text-xs text-zinc-400 sm:inline">
+        <div className="flex items-center gap-2">
+          <span className="hidden rounded-full bg-copper-soft px-2.5 py-1 text-[11px] font-medium tracking-wide text-copper uppercase sm:inline">
             Module Heures
           </span>
           <LogoutButton />
@@ -59,13 +58,14 @@ export function ManagerNav({ current }: { current: string }) {
 
 export function EmployeeHeader({ name }: { name: string }) {
   return (
-    <header className="border-b border-zinc-200 bg-white">
+    <header className="sticky top-0 z-30 border-b border-line/80 bg-surface/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
-        <div>
-          <p className="text-lg font-semibold tracking-tight text-zinc-900">
-            RC-Gestion
-          </p>
-          <p className="text-sm text-zinc-500">{name}</p>
+        <div className="flex items-center gap-3">
+          <Logo href="/heures" size="sm" />
+          <div className="hidden border-l border-line pl-3 sm:block">
+            <p className="text-sm font-medium text-ink">{name}</p>
+            <p className="text-xs text-muted">Espace employé</p>
+          </div>
         </div>
         <LogoutButton />
       </div>

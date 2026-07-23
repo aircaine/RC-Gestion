@@ -47,24 +47,24 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
   }
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+    <div className="rc-panel p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="font-medium text-zinc-900">{entry.employeeName}</p>
-          <p className="text-sm text-zinc-600">
+          <p className="font-medium text-ink">{entry.employeeName}</p>
+          <p className="text-sm text-muted">
             {entry.date} · {entry.startTime} → {entry.endTime} ·{" "}
             <span className="font-medium">{entry.hours}h</span>
           </p>
           {entry.employeeNote ? (
-            <p className="mt-1 text-sm text-zinc-500">Note : {entry.employeeNote}</p>
+            <p className="mt-1 text-sm text-muted">Note : {entry.employeeNote}</p>
           ) : null}
           {entry.managerNote ? (
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-muted">
               Note manager : {entry.managerNote}
             </p>
           ) : null}
           {entry.validatedByName ? (
-            <p className="mt-1 text-xs font-medium text-emerald-800">
+            <p className="mt-1 text-xs font-medium text-forest">
               Validé par {entry.validatedByName}
             </p>
           ) : null}
@@ -73,20 +73,20 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
       </div>
 
       {error ? (
-        <p className="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-800">
+        <p className="mt-2 rounded-xl bg-[var(--rose-soft)] px-3 py-2 text-sm text-[#8f2f2f]">
           {error}
         </p>
       ) : null}
 
       {entry.status === "PENDING" ? (
         <form
-          className="mt-3 space-y-2 rounded-lg border border-zinc-100 bg-zinc-50 p-3"
+          className="mt-3 space-y-2 rounded-lg border border-line/60 bg-paper p-3"
           action={(fd) => {
             fd.set("id", entry.id);
             run(() => confirmTimeEntryWithTimesAction(fd));
           }}
         >
-          <p className="text-xs font-medium text-zinc-600">
+          <p className="text-xs font-medium text-muted">
             Ajuster si besoin, puis confirmer
           </p>
           <div className="grid grid-cols-3 gap-2">
@@ -95,21 +95,21 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
               type="date"
               required
               defaultValue={entry.date}
-              className="rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+              className="rc-input w-auto text-sm"
             />
             <input
               name="startTime"
               type="time"
               required
               defaultValue={entry.startTime}
-              className="rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+              className="rc-input w-auto text-sm"
             />
             <input
               name="endTime"
               type="time"
               required
               defaultValue={entry.endTime}
-              className="rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+              className="rc-input w-auto text-sm"
             />
           </div>
           <input
@@ -117,13 +117,13 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
             type="text"
             placeholder="Note manager (optionnel)"
             defaultValue={entry.managerNote ?? ""}
-            className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+            className="w-full rc-input w-auto text-sm"
           />
           <div className="flex flex-wrap gap-2">
             <button
               type="submit"
               disabled={pending}
-              className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+              className="rc-btn rc-btn-primary py-1.5"
             >
               {pending ? "…" : "Confirmer"}
             </button>
@@ -133,7 +133,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
               onClick={() =>
                 run(() => rejectTimeEntryAction(entry.id, rejectNote))
               }
-              className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+              className="rc-btn rc-btn-danger py-1.5"
             >
               Rejeter
             </button>
@@ -142,7 +142,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
               value={rejectNote}
               onChange={(e) => setRejectNote(e.target.value)}
               placeholder="Motif rejet"
-              className="min-w-[10rem] flex-1 rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+              className="min-w-[10rem] flex-1 rc-input w-auto text-sm"
             />
             <button
               type="button"
@@ -153,7 +153,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
                 }
                 run(() => deleteTimeEntryAction(entry.id));
               }}
-              className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+              className="rc-btn rc-btn-danger py-1.5"
             >
               Supprimer
             </button>
@@ -166,7 +166,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
               type="button"
               disabled={pending}
               onClick={() => setShowAdjust((v) => !v)}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-60"
+              className="rc-btn rc-btn-ghost border border-line text-sm disabled:opacity-60"
             >
               Modifier
             </button>
@@ -179,7 +179,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
                 }
                 run(() => deleteTimeEntryAction(entry.id));
               }}
-              className="rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+              className="rc-btn rc-btn-danger py-1.5"
             >
               Supprimer
             </button>
@@ -187,7 +187,7 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
 
           {showAdjust ? (
             <form
-              className="mt-3 space-y-2 rounded-lg border border-zinc-100 bg-zinc-50 p-3"
+              className="mt-3 space-y-2 rounded-lg border border-line/60 bg-paper p-3"
               action={(fd) => {
                 fd.set("id", entry.id);
                 run(() => adjustTimeEntryAction(fd));
@@ -199,21 +199,21 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
                   type="date"
                   required
                   defaultValue={entry.date}
-                  className="rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+                  className="rc-input w-auto text-sm"
                 />
                 <input
                   name="startTime"
                   type="time"
                   required
                   defaultValue={entry.startTime}
-                  className="rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+                  className="rc-input w-auto text-sm"
                 />
                 <input
                   name="endTime"
                   type="time"
                   required
                   defaultValue={entry.endTime}
-                  className="rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+                  className="rc-input w-auto text-sm"
                 />
               </div>
               <input
@@ -221,12 +221,12 @@ export function TimeEntryReviewCard({ entry }: { entry: Entry }) {
                 type="text"
                 placeholder="Note manager"
                 defaultValue={entry.managerNote ?? ""}
-                className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm"
+                className="w-full rc-input w-auto text-sm"
               />
               <button
                 type="submit"
                 disabled={pending}
-                className="rounded-lg bg-sky-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-sky-800 disabled:opacity-60"
+                className="rc-btn rc-btn-primary py-1.5"
               >
                 Enregistrer
               </button>
@@ -254,7 +254,7 @@ export function ConfirmAllPendingButton({ ids }: { ids: string[] }) {
           router.refresh();
         })
       }
-      className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+      className="rc-btn rc-btn-primary"
     >
       {pending ? "Confirmation…" : `Tout confirmer (${ids.length})`}
     </button>
@@ -277,13 +277,13 @@ export function PastAssignmentCard({ item }: { item: PastAssignment }) {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4 shadow-sm">
+    <div className="rc-panel border-[var(--copper)]/30 bg-copper-soft/50 p-4">
       <div>
-        <p className="font-medium text-zinc-900">{item.employeeName}</p>
-        <p className="text-sm text-zinc-600">
+        <p className="font-medium text-ink">{item.employeeName}</p>
+        <p className="text-sm text-muted">
           {item.slotName} · {item.hours}h planifiées
         </p>
-        <p className="mt-1 text-xs text-amber-800">
+        <p className="mt-1 text-xs text-copper">
           Service passé sans déclaration — ajustez si besoin puis validez
         </p>
       </div>
@@ -309,39 +309,39 @@ export function PastAssignmentCard({ item }: { item: PastAssignment }) {
             type="date"
             required
             defaultValue={item.date}
-            className="rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-sm"
+            className="rc-input w-auto text-sm"
           />
           <input
             name="startTime"
             type="time"
             required
             defaultValue={item.startTime}
-            className="rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-sm"
+            className="rc-input w-auto text-sm"
           />
           <input
             name="endTime"
             type="time"
             required
             defaultValue={item.endTime}
-            className="rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-sm"
+            className="rc-input w-auto text-sm"
           />
         </div>
         <input
           name="managerNote"
           type="text"
           placeholder="Note manager (optionnel)"
-          className="w-full rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-sm"
+          className="w-full rc-input w-auto text-sm"
         />
         <button
           type="submit"
           disabled={pending}
-          className="rounded-lg bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60"
+          className="rc-btn rc-btn-primary py-1.5"
         >
           {pending ? "…" : "Confirmer les heures"}
         </button>
       </form>
 
-      {error ? <p className="mt-2 text-sm text-rose-700">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm text-[#8f2f2f]">{error}</p> : null}
     </div>
   );
 }
@@ -362,7 +362,7 @@ export function ConfirmAllPastAssignmentsButton({ ids }: { ids: string[] }) {
           router.refresh();
         })
       }
-      className="rounded-lg border border-emerald-700 px-3 py-2 text-sm font-medium text-emerald-800 hover:bg-emerald-50 disabled:opacity-60"
+      className="rc-btn rc-btn-secondary"
     >
       {pending ? "Validation…" : `Valider tout le planning passé (${ids.length})`}
     </button>

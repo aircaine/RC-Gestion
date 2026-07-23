@@ -32,17 +32,17 @@ export function DeclareHoursForm({ shifts }: { shifts: ShiftOption[] }) {
   }
 
   return (
-    <form action={onSubmit} className="space-y-4 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-      <h2 className="text-base font-semibold text-zinc-900">
+    <form action={onSubmit} className="space-y-4 rc-panel p-4">
+      <h2 className="text-base font-semibold text-ink">
         Déclarer mes heures
       </h2>
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted">
         Après le service (ou le lendemain), indiquez début et fin. Le manager
         confirmera.
       </p>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-zinc-700" htmlFor="date">
+        <label className="rc-label" htmlFor="date">
           Date
         </label>
         <input
@@ -51,13 +51,13 @@ export function DeclareHoursForm({ shifts }: { shifts: ShiftOption[] }) {
           type="date"
           required
           defaultValue={today}
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2"
+          className="rc-input"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="mb-1 block text-sm font-medium text-zinc-700" htmlFor="startTime">
+          <label className="rc-label" htmlFor="startTime">
             Début
           </label>
           <input
@@ -66,11 +66,11 @@ export function DeclareHoursForm({ shifts }: { shifts: ShiftOption[] }) {
             type="time"
             required
             defaultValue="11:00"
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2"
+            className="rc-input"
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-zinc-700" htmlFor="endTime">
+          <label className="rc-label" htmlFor="endTime">
             Fin
           </label>
           <input
@@ -79,19 +79,19 @@ export function DeclareHoursForm({ shifts }: { shifts: ShiftOption[] }) {
             type="time"
             required
             defaultValue="15:00"
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2"
+            className="rc-input"
           />
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-zinc-700" htmlFor="shiftId">
+        <label className="rc-label" htmlFor="shiftId">
           Shift planifié (optionnel)
         </label>
         <select
           id="shiftId"
           name="shiftId"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2"
+          className="rc-input"
           defaultValue="none"
         >
           <option value="none">Hors planning</option>
@@ -104,25 +104,25 @@ export function DeclareHoursForm({ shifts }: { shifts: ShiftOption[] }) {
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-zinc-700" htmlFor="employeeNote">
+        <label className="rc-label" htmlFor="employeeNote">
           Note (optionnel)
         </label>
         <textarea
           id="employeeNote"
           name="employeeNote"
           rows={2}
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2"
+          className="rc-input"
           placeholder="Ex. service prolongé"
         />
       </div>
 
       {error ? (
-        <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-800">
+        <p className="rounded-xl bg-[var(--rose-soft)] px-3 py-2 text-sm text-[#8f2f2f]">
           {error}
         </p>
       ) : null}
       {success ? (
-        <p className="rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+        <p className="rounded-xl bg-forest-soft px-3 py-2 text-sm text-forest">
           Déclaration envoyée — en attente de confirmation.
         </p>
       ) : null}
@@ -130,7 +130,7 @@ export function DeclareHoursForm({ shifts }: { shifts: ShiftOption[] }) {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60"
+        className="rc-btn rc-btn-primary w-full py-2.5"
       >
         {pending ? "Envoi…" : "Envoyer la déclaration"}
       </button>

@@ -8,16 +8,16 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_CLASS: Record<string, string> = {
-  PENDING: "bg-amber-100 text-amber-900",
-  CONFIRMED: "bg-emerald-100 text-emerald-900",
-  ADJUSTED: "bg-sky-100 text-sky-900",
-  REJECTED: "bg-rose-100 text-rose-900",
+  PENDING: "bg-[var(--amber-soft)] text-[#8a5a12]",
+  CONFIRMED: "bg-forest-soft text-forest",
+  ADJUSTED: "bg-[var(--sky-soft)] text-[#2a5575]",
+  REJECTED: "bg-[var(--rose-soft)] text-[#8f2f2f]",
 };
 
 export function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${STATUS_CLASS[status] ?? "bg-zinc-100 text-zinc-800"}`}
+      className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${STATUS_CLASS[status] ?? "bg-paper-deep text-muted"}`}
     >
       {STATUS_LABELS[status] ?? status}
     </span>

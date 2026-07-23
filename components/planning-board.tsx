@@ -37,11 +37,11 @@ function EmployeeChip({
         e.dataTransfer.setData("text/employee-id", employee.id);
         e.dataTransfer.effectAllowed = "copy";
       }}
-      className="cursor-grab rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-sm font-medium text-zinc-800 shadow-sm active:cursor-grabbing"
+      className="cursor-grab rounded-lg border border-line bg-surface px-2.5 py-1.5 text-sm font-medium text-ink shadow-sm active:cursor-grabbing"
     >
       <span>{employee.name}</span>
       {employee.jobTitle ? (
-        <span className="mt-0.5 block text-xs font-normal text-zinc-500">
+        <span className="mt-0.5 block text-xs font-normal text-muted">
           {employee.jobTitle}
         </span>
       ) : null}
@@ -56,21 +56,21 @@ function AssignmentCard({ assignment }: { assignment: BoardAssignment }) {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="rounded-lg border border-emerald-200 bg-emerald-50/80 p-2">
+    <div className="rounded-xl border border-forest/20 bg-forest-soft/80 p-2">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-sm font-medium text-zinc-900">{assignment.userName}</p>
-          <p className="text-xs text-zinc-600">
+          <p className="text-sm font-medium text-ink">{assignment.userName}</p>
+          <p className="text-xs text-muted">
             {assignment.startTime} → {assignment.endTime}
             {assignment.adjusted ? (
-              <span className="ml-1 text-amber-700">(ajusté)</span>
+              <span className="ml-1 text-copper">(ajusté)</span>
             ) : null}
           </p>
         </div>
         <div className="flex gap-1">
           <button
             type="button"
-            className="text-xs text-zinc-600 hover:underline"
+            className="text-xs text-muted hover:underline"
             onClick={() => setEditing((v) => !v)}
           >
             Ajuster
@@ -78,7 +78,7 @@ function AssignmentCard({ assignment }: { assignment: BoardAssignment }) {
           <button
             type="button"
             disabled={pending}
-            className="text-xs text-rose-700 hover:underline disabled:opacity-60"
+            className="text-xs text-[#8f2f2f] hover:underline disabled:opacity-60"
             onClick={() =>
               startTransition(async () => {
                 await deleteShiftAction(assignment.id);
@@ -93,7 +93,7 @@ function AssignmentCard({ assignment }: { assignment: BoardAssignment }) {
 
       {editing ? (
         <form
-          className="mt-2 space-y-2 border-t border-emerald-100 pt-2"
+          className="mt-2 space-y-2 border-t border-forest/15 pt-2"
           action={(fd) => {
             fd.set("id", assignment.id);
             setError(null);
@@ -114,21 +114,21 @@ function AssignmentCard({ assignment }: { assignment: BoardAssignment }) {
               type="time"
               required
               defaultValue={assignment.startTime}
-              className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
+              className="rounded-md border border-line px-2 py-1 text-xs"
             />
             <input
               name="endTime"
               type="time"
               required
               defaultValue={assignment.endTime}
-              className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
+              className="rounded-md border border-line px-2 py-1 text-xs"
             />
           </div>
-          {error ? <p className="text-xs text-rose-700">{error}</p> : null}
+          {error ? <p className="text-xs text-[#8f2f2f]">{error}</p> : null}
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md bg-zinc-900 px-2 py-1 text-xs font-medium text-white disabled:opacity-60"
+            className="rc-btn rc-btn-primary px-2 py-1 text-xs"
           >
             Enregistrer
           </button>
@@ -171,20 +171,20 @@ function SlotDropZone({ slot }: { slot: BoardSlot }) {
       onDrop={onDrop}
       className={`min-h-28 rounded-xl border border-dashed p-2 transition ${
         over
-          ? "border-zinc-900 bg-zinc-100"
-          : "border-zinc-200 bg-zinc-50/80"
+          ? "border-forest bg-paper-deep"
+          : "border-line bg-paper/80"
       } ${pending ? "opacity-70" : ""}`}
     >
       <div className="mb-2 flex items-start justify-between gap-2">
         <div>
-          <p className="text-sm font-semibold text-zinc-900">{slot.name}</p>
-          <p className="text-xs text-zinc-500">
+          <p className="text-sm font-semibold text-ink">{slot.name}</p>
+          <p className="text-xs text-muted">
             {slot.startTime} → {slot.endTime}
           </p>
         </div>
         <button
           type="button"
-          className="text-xs text-rose-600 hover:underline"
+          className="text-xs text-[#8f2f2f] hover:underline"
           onClick={() =>
             startTransition(async () => {
               await deleteShiftSlotAction(slot.id);
@@ -200,12 +200,12 @@ function SlotDropZone({ slot }: { slot: BoardSlot }) {
           <AssignmentCard key={a.id} assignment={a} />
         ))}
         {slot.assignments.length === 0 ? (
-          <p className="py-3 text-center text-xs text-zinc-400">
+          <p className="py-3 text-center text-xs text-muted">
             Glisser un employé ici
           </p>
         ) : null}
       </div>
-      {error ? <p className="mt-2 text-xs text-rose-700">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-[#8f2f2f]">{error}</p> : null}
     </div>
   );
 }
@@ -229,7 +229,7 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
 
   return (
     <form
-      className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
+      className="space-y-3 rc-panel p-4"
       action={(fd) => {
         setError(null);
         setSuccess(null);
@@ -249,8 +249,8 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
         });
       }}
     >
-      <h2 className="font-semibold text-zinc-900">Nouveau créneau</h2>
-      <p className="text-xs text-zinc-500">
+      <h2 className="font-semibold text-ink">Nouveau créneau</h2>
+      <p className="text-xs text-muted">
         Horaires d’ouverture du service (Midi, Soir…)
       </p>
       <input
@@ -258,10 +258,10 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
         required
         placeholder="Ex. Midi"
         defaultValue="Midi"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        className="rc-input text-sm"
       />
       <div>
-        <label className="mb-1 block text-xs text-zinc-500" htmlFor="slot-date">
+        <label className="mb-1 block text-xs text-muted" htmlFor="slot-date">
           {recurring ? "À partir du" : "Date"}
         </label>
         <input
@@ -270,7 +270,7 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
           type="date"
           required
           defaultValue={defaultDate}
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+          className="rc-input text-sm"
         />
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -279,43 +279,43 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
           type="time"
           required
           defaultValue="11:00"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+          className="rc-input w-auto text-sm"
         />
         <input
           name="endTime"
           type="time"
           required
           defaultValue="15:00"
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+          className="rc-input w-auto text-sm"
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-zinc-700">
+      <label className="flex items-center gap-2 text-sm text-ink">
         <input
           type="checkbox"
           checked={recurring}
           onChange={(e) => setRecurring(e.target.checked)}
-          className="rounded border-zinc-300"
+          className="rounded border-line"
         />
         Créneau récurrent
       </label>
 
       {recurring ? (
-        <div className="space-y-3 rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+        <div className="space-y-3 rounded-lg border border-line/60 bg-paper p-3">
           <div>
-            <p className="mb-2 text-xs font-medium text-zinc-600">Jours</p>
+            <p className="mb-2 text-xs font-medium text-muted">Jours</p>
             <div className="flex flex-wrap gap-1.5">
               {weekDays.map((d) => (
                 <label
                   key={d.value}
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs text-zinc-700"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-line bg-surface px-2 py-1 text-xs text-ink"
                 >
                   <input
                     type="checkbox"
                     name="weekdays"
                     value={d.value}
                     defaultChecked={d.value >= 1 && d.value <= 5}
-                    className="rounded border-zinc-300"
+                    className="rounded border-line"
                   />
                   {d.label}
                 </label>
@@ -324,7 +324,7 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
           </div>
           <div>
             <label
-              className="mb-1 block text-xs text-zinc-500"
+              className="mb-1 block text-xs text-muted"
               htmlFor="weeksCount"
             >
               Pendant (semaines)
@@ -336,7 +336,7 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
               min={1}
               max={12}
               defaultValue={4}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm"
+              className="rc-input text-sm"
             />
           </div>
         </div>
@@ -345,14 +345,14 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
       <input
         name="notes"
         placeholder="Notes (optionnel)"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        className="rc-input text-sm"
       />
-      {error ? <p className="text-sm text-rose-700">{error}</p> : null}
-      {success ? <p className="text-sm text-emerald-700">{success}</p> : null}
+      {error ? <p className="text-sm text-[#8f2f2f]">{error}</p> : null}
+      {success ? <p className="text-sm text-forest">{success}</p> : null}
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+        className="rc-btn rc-btn-primary"
       >
         {pending
           ? "Création…"
@@ -377,19 +377,19 @@ export function PlanningBoard({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
+      <div className="rc-panel p-3">
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">
           Employés — glisser vers un créneau
         </p>
         <div className="flex flex-wrap gap-2">
           {employees.length === 0 ? (
-            <p className="text-sm text-zinc-500">Aucun employé actif.</p>
+            <p className="text-sm text-muted">Aucun employé actif.</p>
           ) : (
             employees.map((e) => <EmployeeChip key={e.id} employee={e} />)
           )}
         </div>
         {assignedIds.size > 0 ? (
-          <p className="mt-2 text-xs text-zinc-400">
+          <p className="mt-2 text-xs text-muted">
             Un employé peut être placé dans plusieurs créneaux.
           </p>
         ) : null}
@@ -399,14 +399,14 @@ export function PlanningBoard({
         {days.map((day) => (
           <div
             key={day.dateKey}
-            className="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm"
+            className="rc-panel p-3"
           >
-            <h3 className="mb-3 text-sm font-semibold capitalize text-zinc-900">
+            <h3 className="mb-3 text-sm font-semibold capitalize text-ink">
               {day.label}
             </h3>
             <div className="space-y-3">
               {day.slots.length === 0 ? (
-                <p className="text-xs text-zinc-400">Aucun créneau ce jour.</p>
+                <p className="text-xs text-muted">Aucun créneau ce jour.</p>
               ) : (
                 day.slots.map((slot) => (
                   <SlotDropZone key={slot.id} slot={slot} />

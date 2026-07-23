@@ -51,28 +51,28 @@ export default async function HeuresPage() {
   }));
 
   return (
-    <div className="min-h-full bg-zinc-50">
+    <div className="rc-page">
       <EmployeeHeader name={session.user.name ?? "Employé"} />
-      <main className="mx-auto max-w-lg space-y-6 px-4 py-6">
-        <section className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <p className="text-sm text-zinc-500">Heures confirmées (14 j.)</p>
-          <p className="mt-1 text-2xl font-semibold text-zinc-900">
+      <main className="rc-main mx-auto max-w-lg space-y-6 px-4 py-8">
+        <section className="rc-panel p-4">
+          <p className="text-sm text-muted">Heures confirmées (14 j.)</p>
+          <p className="mt-1 text-2xl font-semibold text-ink">
             <HoursLabel hours={confirmedHours} />
           </p>
         </section>
 
         {shifts.length > 0 ? (
           <section>
-            <h2 className="mb-2 text-sm font-medium text-zinc-700">
+            <h2 className="mb-2 text-sm font-medium text-ink">
               Shifts assignés
             </h2>
             <ul className="space-y-2">
               {shifts.slice(0, 5).map((s) => (
                 <li
                   key={s.id}
-                  className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700"
+                  className="rounded-xl border border-line bg-surface px-3 py-2 text-sm text-muted"
                 >
-                  <span className="font-medium text-zinc-900">{s.slot.name}</span>
+                  <span className="font-medium text-ink">{s.slot.name}</span>
                   {" · "}
                   {format(s.startsAt, "EEEE d MMMM · HH:mm", { locale: fr })} →{" "}
                   {format(s.endsAt, "HH:mm")}
@@ -85,22 +85,22 @@ export default async function HeuresPage() {
         <DeclareHoursForm shifts={shiftOptions} />
 
         <section>
-          <h2 className="mb-2 text-sm font-medium text-zinc-700">Historique</h2>
+          <h2 className="mb-2 text-sm font-medium text-ink">Historique</h2>
           <ul className="space-y-2">
             {entries.length === 0 ? (
-              <li className="text-sm text-zinc-500">Aucune déclaration.</li>
+              <li className="text-sm text-muted">Aucune déclaration.</li>
             ) : (
               entries.map((e) => (
                 <li
                   key={e.id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-zinc-200 bg-white px-3 py-2.5"
+                  className="rc-panel flex items-center justify-between gap-3 px-3 py-2.5"
                 >
                   <div>
-                    <p className="text-sm font-medium text-zinc-900">
+                    <p className="text-sm font-medium text-ink">
                       {format(e.startedAt, "d MMM yyyy", { locale: fr })} ·{" "}
                       {format(e.startedAt, "HH:mm")}–{format(e.endedAt, "HH:mm")}
                     </p>
-                    <p className="text-xs text-zinc-500">
+                    <p className="text-xs text-muted">
                       <HoursLabel hours={e.hours} /> ·{" "}
                       {e.source === "SCHEDULED" ? "Planifié" : "Hors planning"}
                     </p>

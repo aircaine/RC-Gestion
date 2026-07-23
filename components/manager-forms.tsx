@@ -17,7 +17,7 @@ export function CreateEmployeeForm() {
 
   return (
     <form
-      className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
+      className="space-y-3 rc-panel p-4"
       action={(fd) => {
         setError(null);
         setSuccess(false);
@@ -32,44 +32,44 @@ export function CreateEmployeeForm() {
         });
       }}
     >
-      <h2 className="font-semibold text-zinc-900">Inviter un employé</h2>
-      <p className="text-xs text-zinc-500">
+      <h2 className="font-semibold text-ink">Inviter un employé</h2>
+      <p className="text-xs text-muted">
         Un e-mail lui sera envoyé pour créer son mot de passe.
       </p>
       <input
         name="firstName"
         required
         placeholder="Prénom"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        className="rc-input text-sm"
       />
       <input
         name="lastName"
         required
         placeholder="Nom"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        className="rc-input text-sm"
       />
       <input
         name="email"
         type="email"
         required
         placeholder="Email"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        className="rc-input text-sm"
       />
       <input
         name="jobTitle"
         placeholder="Rôle (ex. Serveur, Cuisinier…)"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        className="rc-input text-sm"
       />
-      {error ? <p className="text-sm text-rose-700">{error}</p> : null}
+      {error ? <p className="text-sm text-[#8f2f2f]">{error}</p> : null}
       {success ? (
-        <p className="text-sm text-emerald-700">
+        <p className="text-sm text-forest">
           Invitation envoyée par e-mail.
         </p>
       ) : null}
       <button
         type="submit"
         disabled={pending}
-        className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
+        className="rc-btn rc-btn-primary"
       >
         {pending ? "Envoi…" : "Envoyer l’invitation"}
       </button>
@@ -100,7 +100,7 @@ export function ToggleEmployeeButton({
             router.refresh();
           })
         }
-        className="rounded-lg border border-zinc-300 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
+        className="rc-btn rc-btn-ghost border border-line text-xs disabled:opacity-60"
       >
         Renvoyer l’invitation
       </button>
@@ -117,7 +117,7 @@ export function ToggleEmployeeButton({
           router.refresh();
         })
       }
-      className="rounded-lg border border-zinc-300 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
+      className="rc-btn rc-btn-ghost border border-line text-xs disabled:opacity-60"
     >
       {active ? "Désactiver" : "Activer"}
     </button>
@@ -149,12 +149,12 @@ export function EditJobTitleForm({
         name="jobTitle"
         defaultValue={jobTitle ?? ""}
         placeholder="Rôle"
-        className="w-full min-w-[8rem] rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-700"
+        className="w-full min-w-[8rem] rounded-md border border-line px-2 py-1 text-xs text-ink"
       />
       <button
         type="submit"
         disabled={pending}
-        className="shrink-0 rounded-md border border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 disabled:opacity-60"
+        className="shrink-0 rounded-md border border-line px-2 py-1 text-xs text-muted hover:bg-paper disabled:opacity-60"
       >
         OK
       </button>

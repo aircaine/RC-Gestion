@@ -39,40 +39,40 @@ export default async function ManagerDashboardPage() {
   const monthHours = confirmedMonth.reduce((s, e) => s + e.hours, 0);
 
   return (
-    <div className="min-h-full bg-zinc-50">
+    <div className="rc-page">
       <ManagerNav current="dashboard" />
-      <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
+      <main className="rc-main mx-auto max-w-6xl space-y-8 px-4 py-8">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-            Dashboard
-          </h1>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted">
             Bienvenue, {session.user.name}
           </p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-ink">
+            Dashboard
+          </h1>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-            <p className="text-sm text-zinc-500">En attente de confirmation</p>
-            <p className="mt-1 text-3xl font-semibold text-amber-700">
+          <div className="rc-panel p-5">
+            <p className="text-sm text-muted">En attente de confirmation</p>
+            <p className="mt-2 font-display text-4xl font-semibold text-copper">
               {pendingCount}
             </p>
             <Link
               href="/manager/heures"
-              className="mt-2 inline-block text-sm font-medium text-emerald-800 underline-offset-2 hover:underline"
+              className="mt-3 inline-block text-sm font-medium text-forest underline-offset-2 hover:underline"
             >
               Confirmer les heures →
             </Link>
           </div>
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-            <p className="text-sm text-zinc-500">Heures du mois</p>
-            <p className="mt-1 text-3xl font-semibold text-zinc-900">
+          <div className="rc-panel p-5">
+            <p className="text-sm text-muted">Heures du mois</p>
+            <p className="mt-2 font-display text-4xl font-semibold text-ink">
               <HoursLabel hours={monthHours} />
             </p>
           </div>
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-            <p className="text-sm text-zinc-500">Employés actifs</p>
-            <p className="mt-1 text-3xl font-semibold text-zinc-900">
+          <div className="rc-panel p-5">
+            <p className="text-sm text-muted">Employés actifs</p>
+            <p className="mt-2 font-display text-4xl font-semibold text-ink">
               {employeeCount}
             </p>
           </div>
@@ -80,28 +80,28 @@ export default async function ManagerDashboardPage() {
 
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-semibold text-zinc-900">
+            <h2 className="text-lg font-semibold text-ink">
               Déclarations à confirmer
             </h2>
             <Link
               href="/manager/heures"
-              className="text-sm text-zinc-600 underline-offset-2 hover:underline"
+              className="text-sm text-muted underline-offset-2 hover:text-ink hover:underline"
             >
               Tout voir
             </Link>
           </div>
           {pending.length === 0 ? (
-            <p className="text-sm text-zinc-500">Aucune déclaration en attente.</p>
+            <p className="text-sm text-muted">Aucune déclaration en attente.</p>
           ) : (
             <ul className="space-y-2">
               {pending.map((e) => (
                 <li
                   key={e.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3"
+                  className="rc-panel flex flex-wrap items-center justify-between gap-2 px-4 py-3"
                 >
                   <div>
-                    <p className="font-medium text-zinc-900">{e.user.name}</p>
-                    <p className="text-sm text-zinc-600">
+                    <p className="font-medium text-ink">{e.user.name}</p>
+                    <p className="text-sm text-muted">
                       {format(e.startedAt, "d MMM yyyy HH:mm", { locale: fr })} →{" "}
                       {format(e.endedAt, "HH:mm")} ·{" "}
                       <HoursLabel hours={e.hours} />
@@ -114,16 +114,16 @@ export default async function ManagerDashboardPage() {
           )}
         </section>
 
-        <section className="rounded-xl border border-dashed border-zinc-300 bg-white/60 p-4">
-          <p className="text-sm font-medium text-zinc-700">Modules</p>
-          <ul className="mt-2 flex flex-wrap gap-2 text-sm">
-            <li className="rounded-md bg-zinc-900 px-2.5 py-1 text-white">
+        <section className="rounded-2xl border border-dashed border-line bg-surface/70 p-5">
+          <p className="text-sm font-medium text-ink">Modules</p>
+          <ul className="mt-3 flex flex-wrap gap-2 text-sm">
+            <li className="rounded-lg bg-forest px-2.5 py-1 text-white">
               Heures
             </li>
-            <li className="rounded-md bg-zinc-100 px-2.5 py-1 text-zinc-400">
+            <li className="rounded-lg bg-paper-deep px-2.5 py-1 text-muted">
               Stocks (bientôt)
             </li>
-            <li className="rounded-md bg-zinc-100 px-2.5 py-1 text-zinc-400">
+            <li className="rounded-lg bg-paper-deep px-2.5 py-1 text-muted">
               Caisse (bientôt)
             </li>
           </ul>

@@ -89,22 +89,22 @@ export default async function ComptaPage({
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
 
   return (
-    <div className="min-h-full bg-zinc-50">
+    <div className="rc-page">
       <ManagerNav current="compta" />
-      <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
+      <main className="rc-main mx-auto max-w-6xl space-y-6 px-4 py-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+            <h1 className="text-3xl font-semibold tracking-tight text-ink">
               Compta
             </h1>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-muted">
               Totaux heures confirmées / ajustées
             </p>
           </div>
           <a
             href={csvHref}
             download={`heures-${fromStr}-${toStr}.csv`}
-            className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+            className="rc-btn rc-btn-primary hover:bg-forest-hover"
           >
             Export CSV
           </a>
@@ -112,7 +112,7 @@ export default async function ComptaPage({
 
         <form method="get" className="flex flex-wrap items-end gap-3">
           <div>
-            <label className="mb-1 block text-xs text-zinc-500" htmlFor="from">
+            <label className="mb-1 block text-xs text-muted" htmlFor="from">
               Du
             </label>
             <input
@@ -120,11 +120,11 @@ export default async function ComptaPage({
               name="from"
               type="date"
               defaultValue={fromStr}
-              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm"
+              className="rc-input w-auto text-sm"
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-zinc-500" htmlFor="to">
+            <label className="mb-1 block text-xs text-muted" htmlFor="to">
               Au
             </label>
             <input
@@ -132,27 +132,27 @@ export default async function ComptaPage({
               name="to"
               type="date"
               defaultValue={toStr}
-              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm"
+              className="rc-input w-auto text-sm"
             />
           </div>
           <button
             type="submit"
-            className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-800 hover:bg-zinc-50"
+            className="rc-input w-auto text-sm font-medium text-ink hover:bg-paper"
           >
             Appliquer
           </button>
         </form>
 
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <p className="text-sm text-zinc-500">Total période</p>
-          <p className="text-3xl font-semibold text-zinc-900">
+        <div className="rc-panel p-4">
+          <p className="text-sm text-muted">Total période</p>
+          <p className="text-3xl font-semibold text-ink">
             <HoursLabel hours={grandTotal} />
           </p>
         </div>
 
-        <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+        <div className="rc-panel overflow-hidden">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-zinc-200 bg-zinc-50 text-zinc-500">
+            <thead className="border-b border-line bg-paper text-muted">
               <tr>
                 <th className="px-4 py-2 font-medium">Employé</th>
                 <th className="px-4 py-2 font-medium">Déclarations</th>
@@ -162,7 +162,7 @@ export default async function ComptaPage({
             <tbody>
               {totals.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-4 py-6 text-zinc-500">
+                  <td colSpan={3} className="px-4 py-6 text-muted">
                     Aucune heure confirmée sur la période.
                   </td>
                 </tr>
@@ -170,13 +170,13 @@ export default async function ComptaPage({
                 totals.map((t) => (
                   <tr
                     key={t.email}
-                    className="border-b border-zinc-100 last:border-0"
+                    className="border-b border-line/50 last:border-0"
                   >
                     <td className="px-4 py-3">
-                      <p className="font-medium text-zinc-900">{t.name}</p>
-                      <p className="text-xs text-zinc-500">{t.email}</p>
+                      <p className="font-medium text-ink">{t.name}</p>
+                      <p className="text-xs text-muted">{t.email}</p>
                     </td>
-                    <td className="px-4 py-3 text-zinc-600">{t.count}</td>
+                    <td className="px-4 py-3 text-muted">{t.count}</td>
                     <td className="px-4 py-3">
                       <HoursLabel hours={t.hours} />
                     </td>

@@ -45,24 +45,25 @@ export async function sendEmployeeInviteEmail(params: {
     to: params.to,
     subject: "Créez votre compte RC-Gestion",
     html: `
-      <div style="font-family: system-ui, sans-serif; max-width: 480px; margin: 0 auto; color: #18181b;">
-        <h1 style="font-size: 22px; margin-bottom: 8px;">Bienvenue sur RC-Gestion</h1>
-        <p style="margin: 0 0 16px;">Bonjour ${escapeHtml(params.employeeName)},</p>
-        <p style="margin: 0 0 16px;">
+      <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 480px; margin: 0 auto; color: #15241c; background: #fffcf7; border: 1px solid #ddd8cf; border-radius: 16px; padding: 28px;">
+        <div style="display:inline-block;background:#2F5D46;color:#F4F1EA;font-family:system-ui,sans-serif;font-weight:700;font-size:13px;letter-spacing:0.04em;padding:8px 12px;border-radius:10px;margin-bottom:16px;">RC</div>
+        <h1 style="font-size: 24px; margin: 0 0 8px; font-weight: 600;">Bienvenue sur RC-Gestion</h1>
+        <p style="margin: 0 0 16px; font-family: system-ui, sans-serif; color: #5c6b63; font-size: 14px;">Bonjour ${escapeHtml(params.employeeName)},</p>
+        <p style="margin: 0 0 16px; font-family: system-ui, sans-serif; font-size: 15px; line-height: 1.5;">
           Votre manager vous invite à créer votre compte pour déclarer vos heures.
           Cliquez sur le bouton ci-dessous pour choisir votre mot de passe.
         </p>
         <p style="margin: 24px 0;">
           <a href="${link}"
-             style="display:inline-block;background:#18181b;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:600;">
+             style="display:inline-block;background:#2F5D46;color:#f7faf8;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:600;font-family:system-ui,sans-serif;">
             Créer mon mot de passe
           </a>
         </p>
-        <p style="font-size: 13px; color: #71717a; margin: 0 0 8px;">
+        <p style="font-size: 13px; color: #5c6b63; margin: 0 0 8px; font-family: system-ui, sans-serif;">
           Ou copiez ce lien : <br/>
-          <a href="${link}" style="color:#3b82f6; word-break: break-all;">${link}</a>
+          <a href="${link}" style="color:#2F5D46; word-break: break-all;">${link}</a>
         </p>
-        <p style="font-size: 12px; color: #a1a1aa; margin-top: 24px;">
+        <p style="font-size: 12px; color: #8a958e; margin-top: 24px; font-family: system-ui, sans-serif;">
           Ce lien expire dans 7 jours. Si vous n’êtes pas concerné, ignorez cet e-mail.
         </p>
       </div>

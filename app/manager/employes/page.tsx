@@ -21,16 +21,16 @@ export default async function EmployesPage() {
   });
 
   return (
-    <div className="min-h-full bg-zinc-50">
+    <div className="rc-page">
       <ManagerNav current="employes" />
-      <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[1fr_320px]">
+      <main className="rc-main mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[1fr_320px]">
         <section>
-          <h1 className="mb-4 text-2xl font-semibold tracking-tight text-zinc-900">
+          <h1 className="mb-4 text-3xl font-semibold tracking-tight text-ink">
             Employés
           </h1>
-          <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+          <div className="rc-panel overflow-hidden">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-200 bg-zinc-50 text-zinc-500">
+              <thead className="border-b border-line bg-paper text-muted">
                 <tr>
                   <th className="px-4 py-2 font-medium">Nom</th>
                   <th className="px-4 py-2 font-medium">Rôle</th>
@@ -43,21 +43,21 @@ export default async function EmployesPage() {
                 {employees.map((e) => {
                   const pendingInvite = !e.passwordHash;
                   return (
-                    <tr key={e.id} className="border-b border-zinc-100 last:border-0">
-                      <td className="px-4 py-3 font-medium text-zinc-900">
+                    <tr key={e.id} className="border-b border-line/50 last:border-0">
+                      <td className="px-4 py-3 font-medium text-ink">
                         {e.name}
                       </td>
                       <td className="px-4 py-3">
                         <EditJobTitleForm id={e.id} jobTitle={e.jobTitle} />
                       </td>
-                      <td className="px-4 py-3 text-zinc-600">{e.email}</td>
+                      <td className="px-4 py-3 text-muted">{e.email}</td>
                       <td className="px-4 py-3">
                         {pendingInvite ? (
-                          <span className="text-amber-700">Invitation envoyée</span>
+                          <span className="text-copper">Invitation envoyée</span>
                         ) : e.active ? (
-                          <span className="text-emerald-700">Actif</span>
+                          <span className="text-forest">Actif</span>
                         ) : (
-                          <span className="text-zinc-400">Inactif</span>
+                          <span className="text-muted">Inactif</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">

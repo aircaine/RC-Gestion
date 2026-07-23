@@ -103,35 +103,35 @@ export default async function PlanningPage({
   });
 
   return (
-    <div className="min-h-full bg-zinc-50">
+    <div className="rc-page">
       <ManagerNav current="planning" />
-      <main className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_280px]">
+      <main className="rc-main mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[1fr_280px]">
         <section className="space-y-4">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+              <h1 className="text-3xl font-semibold tracking-tight text-ink">
                 Planning
               </h1>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-muted">
                 Semaine du {format(weekStart, "d MMM")} — créneaux & affectations
               </p>
             </div>
             <div className="flex gap-2">
               <a
                 href={`/manager/planning?week=${prevWeek}`}
-                className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50"
+                className="rc-btn rc-btn-ghost border border-line"
               >
                 ← Semaine préc.
               </a>
               <a
                 href={`/manager/planning?week=${todayKey}`}
-                className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50"
+                className="rc-btn rc-btn-ghost border border-line"
               >
                 Aujourd’hui
               </a>
               <a
                 href={`/manager/planning?week=${nextWeek}`}
-                className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50"
+                className="rc-btn rc-btn-ghost border border-line"
               >
                 Semaine suiv. →
               </a>

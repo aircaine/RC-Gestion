@@ -1,4 +1,5 @@
 import { AcceptInviteForm } from "@/components/accept-invite-form";
+import { Logo } from "@/components/logo";
 import { hashToken } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 
@@ -18,27 +19,26 @@ export default async function InvitationPage({ params }: { params: Params }) {
   });
 
   return (
-    <main className="flex min-h-full flex-1 items-center justify-center bg-zinc-50 px-4 py-12">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-            RC-Gestion
-          </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+    <main className="rc-auth-bg flex min-h-full flex-1 items-center justify-center px-4 py-12">
+      <div className="rc-shell relative z-10 w-full max-w-md">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <Logo href={null} size="lg" variant="light" />
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#c5d4cb]">
             Créez votre mot de passe pour activer votre compte
           </p>
         </div>
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <div className="rc-panel p-6 sm:p-7">
           {!user ? (
-            <p className="text-sm text-rose-700">
+            <p className="text-sm text-[#8f2f2f]">
               Cette invitation est invalide ou a expiré. Demandez à votre
               manager de renvoyer l’invitation.
             </p>
           ) : (
             <>
-              <p className="mb-4 text-sm text-zinc-600">
-                Bonjour <span className="font-medium text-zinc-900">{user.name}</span>
-                {" "}({user.email})
+              <p className="mb-4 text-sm text-muted">
+                Bonjour{" "}
+                <span className="font-medium text-ink">{user.name}</span> (
+                {user.email})
               </p>
               <AcceptInviteForm token={token} />
             </>

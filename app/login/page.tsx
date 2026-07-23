@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/login-form";
+import { Logo } from "@/components/logo";
 
 type SearchParams = Promise<{ activated?: string }>;
 
@@ -11,24 +12,25 @@ export default async function LoginPage({
   const activated = params.activated === "1";
 
   return (
-    <main className="flex min-h-full flex-1 items-center justify-center bg-zinc-50 px-4 py-12">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-            RC-Gestion
-          </h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            Gestion des heures — restaurant
+    <main className="rc-auth-bg flex min-h-full flex-1 items-center justify-center px-4 py-12">
+      <div className="rc-shell relative z-10 w-full max-w-md">
+        <div className="mb-8 flex flex-col items-center text-center">
+          <Logo href={null} size="lg" variant="light" />
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-[#c5d4cb]">
+            Planifiez, déclarez et validez les heures de votre équipe.
           </p>
         </div>
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <div className="rc-panel p-6 sm:p-7">
           {activated ? (
-            <p className="mb-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+            <p className="mb-4 rounded-xl bg-forest-soft px-3 py-2.5 text-sm text-forest">
               Compte activé. Connectez-vous avec votre e-mail et mot de passe.
             </p>
           ) : null}
           <LoginForm />
         </div>
+        <p className="mt-6 text-center text-xs text-[#9db0a5]">
+          Accès réservé au personnel du restaurant
+        </p>
       </div>
     </main>
   );

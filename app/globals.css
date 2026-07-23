@@ -1,25 +1,193 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #18181b;
-  --accent: #1c1917;
+  --ink: #15241c;
+  --muted: #5c6b63;
+  --line: #ddd8cf;
+  --paper: #f0eee9;
+  --paper-deep: #e6e2d8;
+  --surface: #fffcf7;
+  --forest: #2f5d46;
+  --forest-hover: #264a39;
+  --forest-soft: #e7efe9;
+  --copper: #9a6b3f;
+  --copper-soft: #f3ebe2;
+  --amber-soft: #f7ecd8;
+  --rose-soft: #f8e8e8;
+  --sky-soft: #e6eef5;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --accent: var(--forest);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-dm-sans);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-surface: var(--surface);
+  --color-forest: var(--forest);
+  --color-forest-hover: var(--forest-hover);
+  --color-forest-soft: var(--forest-soft);
+  --color-copper: var(--copper);
+  --color-copper-soft: var(--copper-soft);
+  --font-sans: var(--font-outfit);
   --font-display: var(--font-fraunces);
 }
 
+@keyframes rc-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(47, 93, 70, 0.08), transparent),
+    linear-gradient(180deg, rgba(255, 252, 247, 0.5) 0%, transparent 28%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  color: var(--ink);
+  font-family: var(--font-outfit), system-ui, sans-serif;
 }
 
 h1,
-h2 {
+h2,
+.font-display {
   font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.rc-page {
+  min-height: 100%;
+  background: transparent;
+}
+
+.rc-shell {
+  animation: rc-fade-in 0.35s ease-out;
+}
+
+.rc-main {
+  animation: rc-fade-up 0.45s ease-out both;
+}
+
+.rc-panel {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgba(21, 36, 28, 0.03);
+}
+
+.rc-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 0.55rem 0.8rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.rc-input:focus {
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px rgba(47, 93, 70, 0.18);
+}
+
+.rc-label {
+  margin-bottom: 0.35rem;
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.rc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.75rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 560;
+  transition: background 0.15s, opacity 0.15s, transform 0.12s;
+}
+
+.rc-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.rc-btn:disabled {
+  opacity: 0.55;
+}
+
+.rc-btn-primary {
+  background: var(--forest);
+  color: #f7faf8;
+}
+
+.rc-btn-primary:hover:not(:disabled) {
+  background: var(--forest-hover);
+}
+
+.rc-btn-secondary {
+  background: var(--forest-soft);
+  color: var(--forest);
+}
+
+.rc-btn-secondary:hover:not(:disabled) {
+  background: #d8e6dd;
+}
+
+.rc-btn-ghost {
+  background: transparent;
+  color: var(--muted);
+}
+
+.rc-btn-ghost:hover:not(:disabled) {
+  background: rgba(21, 36, 28, 0.05);
+  color: var(--ink);
+}
+
+.rc-btn-danger {
+  background: var(--rose-soft);
+  color: #8f2f2f;
+}
+
+.rc-btn-danger:hover:not(:disabled) {
+  background: #f0d6d6;
+}
+
+.rc-auth-bg {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 15% 20%, rgba(47, 93, 70, 0.22), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 90% 80%, rgba(154, 107, 63, 0.16), transparent 50%),
+    linear-gradient(160deg, #1a2e24 0%, #15241c 45%, #1f3328 100%);
+}
+
+.rc-auth-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
 }

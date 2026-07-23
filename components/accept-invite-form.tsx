@@ -27,10 +27,7 @@ export function AcceptInviteForm({ token }: { token: string }) {
       }}
     >
       <div>
-        <label
-          htmlFor="password"
-          className="mb-1 block text-sm font-medium text-zinc-700"
-        >
+        <label htmlFor="password" className="rc-label">
           Mot de passe
         </label>
         <input
@@ -40,14 +37,11 @@ export function AcceptInviteForm({ token }: { token: string }) {
           required
           minLength={6}
           autoComplete="new-password"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-zinc-400 focus:ring-2"
+          className="rc-input"
         />
       </div>
       <div>
-        <label
-          htmlFor="confirmPassword"
-          className="mb-1 block text-sm font-medium text-zinc-700"
-        >
+        <label htmlFor="confirmPassword" className="rc-label">
           Confirmer le mot de passe
         </label>
         <input
@@ -57,18 +51,18 @@ export function AcceptInviteForm({ token }: { token: string }) {
           required
           minLength={6}
           autoComplete="new-password"
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 outline-none ring-zinc-400 focus:ring-2"
+          className="rc-input"
         />
       </div>
       {error ? (
-        <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-800">
+        <p className="rounded-xl bg-[var(--rose-soft)] px-3 py-2.5 text-sm text-[#8f2f2f]">
           {error}
         </p>
       ) : null}
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60"
+        className="rc-btn rc-btn-primary w-full py-2.5"
       >
         {pending ? "Activation…" : "Activer mon compte"}
       </button>
