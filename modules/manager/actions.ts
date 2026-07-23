@@ -172,25 +172,18 @@ export async function toggleEmployeeActiveAction(
   return { ok: true };
 }
 
-export async function createShiftAction(
+export async function createShiftSlotAction(
   formData: FormData,
 ): Promise<ActionResult> {
   await requireManager();
-  const userId = String(formData.get("userId") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
   const date = String(formData.get("date") ?? "");
   const startTime = String(formData.get("startTime") ?? "");
   const endTime = String(formData.get("endTime") ?? "");
   const notes = String(formData.get("notes") ?? "").trim() || null;
 
-  if (!userId || !date || !startTime || !endTime) {
-    return { ok: false, error: "Tous les champs obligatoires manquants" };
-  }
-
-  const employee = await prisma.user.findFirst({
-    where: { id: userId, role: "EMPLOYEE", active: true },
-  });
-  if (!employee) {
-    return { ok: false, error: "Employé introuvable" };
+  if (!name || !date || !startTime || !endTime) {
+    return { ok: false, error: "Nom, date et horaires requis" };
   }
 
   const [y, m, d] = date.split("-").map(Number);
@@ -202,8 +195,89 @@ export async function createShiftAction(
     endsAt = new Date(endsAt.getTime() + 24 * 60 * 60 * 1000);
   }
 
+  await prisma.shiftSlot.create({
+    data: { name, startsAt, endsAt, notes },
+  });
+
+  revalidatePath("/manager/planning");
+  return { ok: true };
+}
+
+export async function deleteShiftSlotAction(id: string): Promise<ActionResult> {
+  await requireManager();
+  await prisma.shiftSlot.delete({ where: { id } });
+  revalidatePath("/manager/planning");
+  revalidatePath("/heures");
+  return { ok: true };
+}
+
+export async function assignEmployeeToSlotAction(
+  slotId: string,
+  userId: string,
+): Promise<ActionResult> {
+  await requireManager();
+
+  const [slot, employee] = await Promise.all([
+    prisma.shiftSlot.findUnique({ where: { id: slotId } }),
+    prisma.user.findFirst({
+      where: { id: userId, role: "EMPLOYEE", active: true, passwordHash: { not: null } },
+    }),
+  ]);
+
+  if (!slot) return { ok: false, error: "Créneau introuvable" };
+  if (!employee) return { ok: false, error: "Employé introuvable" };
+
+  const existing = await prisma.shift.findUnique({
+    where: { slotId_userId: { slotId, userId } },
+  });
+  if (existing) {
+    return { ok: false, error: "Employé déjà assigné à ce créneau" };
+  }
+
   await prisma.shift.create({
-    data: { userId, startsAt, endsAt, notes },
+    data: {
+      slotId,
+      userId,
+      startsAt: slot.startsAt,
+      endsAt: slot.endsAt,
+    },
+  });
+
+  revalidatePath("/manager/planning");
+  revalidatePath("/heures");
+  return { ok: true };
+}
+
+export async function updateAssignmentTimesAction(
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireManager();
+  const id = String(formData.get("id") ?? "");
+  const startTime = String(formData.get("startTime") ?? "");
+  const endTime = String(formData.get("endTime") ?? "");
+
+  const assignment = await prisma.shift.findUnique({
+    where: { id },
+    include: { slot: true },
+  });
+  if (!assignment) return { ok: false, error: "Affectation introuvable" };
+
+  const base = assignment.slot.startsAt;
+  const y = base.getFullYear();
+  const m = base.getMonth();
+  const d = base.getDate();
+  const [sh, sm] = startTime.split(":").map(Number);
+  const [eh, em] = endTime.split(":").map(Number);
+  const startsAt = new Date(y, m, d, sh, sm, 0, 0);
+  let endsAt = new Date(y, m, d, eh, em, 0, 0);
+  if (endsAt <= startsAt) {
+    endsAt = new Date(endsAt.getTime() + 24 * 60 * 60 * 1000);
+  }
+
+  // Keep within reason relative to slot (± still allow early/late within day)
+  await prisma.shift.update({
+    where: { id },
+    data: { startsAt, endsAt },
   });
 
   revalidatePath("/manager/planning");

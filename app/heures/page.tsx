@@ -28,6 +28,7 @@ export default async function HeuresPage() {
         userId: session.user.id,
         startsAt: { gte: from, lte: to },
       },
+      include: { slot: { select: { name: true } } },
       orderBy: { startsAt: "desc" },
     }),
     prisma.timeEntry.findMany({
@@ -46,7 +47,7 @@ export default async function HeuresPage() {
 
   const shiftOptions = shifts.map((s) => ({
     id: s.id,
-    label: `${format(s.startsAt, "EEE d MMM HH:mm", { locale: fr })} → ${format(s.endsAt, "HH:mm")}${s.notes ? ` (${s.notes})` : ""}`,
+    label: `${s.slot.name} · ${format(s.startsAt, "EEE d MMM HH:mm", { locale: fr })} → ${format(s.endsAt, "HH:mm")}`,
   }));
 
   return (
@@ -71,11 +72,10 @@ export default async function HeuresPage() {
                   key={s.id}
                   className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700"
                 >
+                  <span className="font-medium text-zinc-900">{s.slot.name}</span>
+                  {" · "}
                   {format(s.startsAt, "EEEE d MMMM · HH:mm", { locale: fr })} →{" "}
                   {format(s.endsAt, "HH:mm")}
-                  {s.notes ? (
-                    <span className="text-zinc-400"> — {s.notes}</span>
-                  ) : null}
                 </li>
               ))}
             </ul>

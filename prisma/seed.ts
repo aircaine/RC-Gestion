@@ -56,17 +56,32 @@ async function main() {
   const tomorrowEnd = new Date(tomorrow);
   tomorrowEnd.setHours(15, 0, 0, 0);
 
-  const existingShift = await prisma.shift.findFirst({
-    where: { userId: employee1.id },
+  let slot = await prisma.shiftSlot.findFirst({
+    where: { name: "Midi", startsAt: tomorrow },
   });
 
-  if (!existingShift) {
-    await prisma.shift.create({
+  if (!slot) {
+    slot = await prisma.shiftSlot.create({
       data: {
-        userId: employee1.id,
+        name: "Midi",
         startsAt: tomorrow,
         endsAt: tomorrowEnd,
         notes: "Service midi",
+      },
+    });
+  }
+
+  const existingAssignment = await prisma.shift.findFirst({
+    where: { userId: employee1.id, slotId: slot.id },
+  });
+
+  if (!existingAssignment) {
+    await prisma.shift.create({
+      data: {
+        slotId: slot.id,
+        userId: employee1.id,
+        startsAt: tomorrow,
+        endsAt: tomorrowEnd,
       },
     });
   }

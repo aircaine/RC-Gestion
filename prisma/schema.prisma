@@ -38,8 +38,25 @@ model User {
   timeEntries     TimeEntry[]
 }
 
+/// Créneau / horaire d'ouverture (ex. Midi 11h–15h un jour donné)
+model ShiftSlot {
+  id          String   @id @default(cuid())
+  name        String
+  startsAt    DateTime
+  endsAt      DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  assignments Shift[]
+
+  @@index([startsAt])
+}
+
+/// Affectation d'un employé dans un créneau (horaires ajustables)
 model Shift {
   id          String      @id @default(cuid())
+  slotId      String
+  slot        ShiftSlot   @relation(fields: [slotId], references: [id], onDelete: Cascade)
   userId      String
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   startsAt    DateTime
@@ -49,6 +66,7 @@ model Shift {
   updatedAt   DateTime    @updatedAt
   timeEntries TimeEntry[]
 
+  @@unique([slotId, userId])
   @@index([userId, startsAt])
 }
 
