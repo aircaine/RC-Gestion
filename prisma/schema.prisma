@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  MANAGER
+  EMPLOYEE
+}
+
+enum TimeEntrySource {
+  SCHEDULED
+  FREE
+}
+
+enum TimeEntryStatus {
+  PENDING
+  CONFIRMED
+  ADJUSTED
+  REJECTED
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  passwordHash String
+  name         String
+  role         Role        @default(EMPLOYEE)
+  active       Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  shifts       Shift[]
+  timeEntries  TimeEntry[]
+}
+
+model Shift {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startsAt    DateTime
+  endsAt      DateTime
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  timeEntries TimeEntry[]
+
+  @@index([userId, startsAt])
+}
+
+model TimeEntry {
+  id           String          @id @default(cuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shiftId      String?
+  shift        Shift?          @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+  startedAt    DateTime
+  endedAt      DateTime
+  hours        Float
+  source       TimeEntrySource @default(FREE)
+  status       TimeEntryStatus @default(PENDING)
+  employeeNote String?
+  managerNote  String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([userId, startedAt])
+  @@index([status])
+}

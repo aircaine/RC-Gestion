@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RC-Gestion
 
-## Getting Started
+Plateforme de gestion pour restaurant. **Module V1 : Heures** — déclaration a posteriori, calcul automatique, confirmation manager.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router) + TypeScript + Tailwind
+- Prisma 7 + Neon (Postgres) via `@prisma/adapter-neon`
+- Auth.js (NextAuth v5) — email / mot de passe
+- Déploiement cible : **Vercel**
+
+## Fonctionnalités
+
+| Rôle | Capacités |
+|------|-----------|
+| **Employé** | Se connecter, déclarer date + début/fin, lier à un shift ou hors planning, voir l’historique |
+| **Manager** | Employés, planning (shifts), confirmer / corriger / rejeter, totaux compta + export CSV |
+
+## Setup local
+
+### 1. Neon
+
+1. Créer un projet sur [neon.tech](https://neon.tech)
+2. Dans **Connect**, copier :
+   - l’URL **pooled** (`…-pooler…`) → `DATABASE_URL`
+   - l’URL **direct** → `DIRECT_URL`
+
+### 2. Variables d’environnement
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Renseigner :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+DATABASE_URL="postgresql://…-pooler…/neondb?sslmode=require"
+DIRECT_URL="postgresql://…/neondb?sslmode=require"
+AUTH_SECRET="…"   # openssl rand -base64 32
+AUTH_URL="http://localhost:3000"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Installer, migrer, seed
 
-## Learn More
+```bash
+npm install
+npx prisma migrate deploy
+npm run db:seed
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Ouvrir [http://localhost:3000](http://localhost:3000)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Comptes de démo (seed)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Manager | `manager@rc-gestion.local` | `password123` |
+| Employé | `employe1@rc-gestion.local` | `password123` |
+| Employé | `employe2@rc-gestion.local` | `password123` |
 
-## Deploy on Vercel
+## Déploiement Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Pousser le repo sur GitHub
+2. Importer le projet dans Vercel
+3. Ajouter les env : `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `AUTH_URL` (URL de prod)
+4. Build command (défaut) : `prisma generate && next build` (déjà dans `package.json`)
+5. Après le premier deploy, exécuter les migrations :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx prisma migrate deploy
+npm run db:seed
+```
+
+(ou via `vercel env pull` + CLI en local pointant sur Neon prod)
+
+## Structure
+
+```
+app/
+  login/                 # Connexion
+  heures/                # Espace employé
+  manager/               # Backend manager (dashboard, employés, planning, heures, compta)
+  api/auth/              # Auth.js
+modules/
+  time-tracking/         # Déclarations & calcul heures
+  auth/                  # Login / rôles
+  manager/               # CRUD employés & shifts
+prisma/                  # Schéma + migrations + seed
+```
+
+## Scripts utiles
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Dev server |
+| `npm run build` | Generate Prisma client + build Next |
+| `npm run db:migrate` | Appliquer migrations (`migrate deploy`) |
+| `npm run db:seed` | Comptes de démo |
+| `npm run db:generate` | `prisma generate` |
