@@ -9,13 +9,12 @@ import {
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ManagerNav } from "@/components/nav";
+import { CreateSlotForm, PlanningBoard } from "@/components/planning-board";
 import {
-  CreateSlotForm,
-  PlanningBoard,
   formatDayLabel,
   formatTime,
   type BoardDay,
-} from "@/components/planning-board";
+} from "@/lib/planning";
 
 export const dynamic = "force-dynamic";
 

@@ -1,7 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type DragEvent } from "react";
 import {
@@ -11,33 +9,19 @@ import {
   deleteShiftSlotAction,
   updateAssignmentTimesAction,
 } from "@/modules/manager/actions";
+import type {
+  BoardAssignment,
+  BoardDay,
+  BoardEmployee,
+  BoardSlot,
+} from "@/lib/planning";
 
-export type BoardEmployee = { id: string; name: string };
-
-export type BoardAssignment = {
-  id: string;
-  userId: string;
-  userName: string;
-  startTime: string;
-  endTime: string;
-  adjusted: boolean;
-};
-
-export type BoardSlot = {
-  id: string;
-  name: string;
-  dateKey: string;
-  dateLabel: string;
-  startTime: string;
-  endTime: string;
-  assignments: BoardAssignment[];
-};
-
-export type BoardDay = {
-  dateKey: string;
-  label: string;
-  slots: BoardSlot[];
-};
+export type {
+  BoardAssignment,
+  BoardDay,
+  BoardEmployee,
+  BoardSlot,
+} from "@/lib/planning";
 
 function EmployeeChip({
   employee,
@@ -346,13 +330,4 @@ export function PlanningBoard({
       </div>
     </div>
   );
-}
-
-/** Helper for server pages to format times consistently */
-export function formatTime(date: Date): string {
-  return format(date, "HH:mm");
-}
-
-export function formatDayLabel(date: Date): string {
-  return format(date, "EEEE d MMM", { locale: fr });
 }
