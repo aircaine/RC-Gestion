@@ -209,18 +209,37 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [recurring, setRecurring] = useState(false);
+
+  const weekDays = [
+    { value: 1, label: "Lun" },
+    { value: 2, label: "Mar" },
+    { value: 3, label: "Mer" },
+    { value: 4, label: "Jeu" },
+    { value: 5, label: "Ven" },
+    { value: 6, label: "Sam" },
+    { value: 7, label: "Dim" },
+  ];
 
   return (
     <form
       className="space-y-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm"
       action={(fd) => {
         setError(null);
+        setSuccess(null);
+        if (recurring) fd.set("recurring", "1");
         startTransition(async () => {
           const result = await createShiftSlotAction(fd);
           if (!result.ok) {
             setError(result.error);
             return;
           }
+          setSuccess(
+            recurring
+              ? "Créneaux récurrents créés."
+              : "Créneau créé.",
+          );
           router.refresh();
         });
       }}
@@ -236,13 +255,19 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
         defaultValue="Midi"
         className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
       />
-      <input
-        name="date"
-        type="date"
-        required
-        defaultValue={defaultDate}
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
-      />
+      <div>
+        <label className="mb-1 block text-xs text-zinc-500" htmlFor="slot-date">
+          {recurring ? "À partir du" : "Date"}
+        </label>
+        <input
+          id="slot-date"
+          name="date"
+          type="date"
+          required
+          defaultValue={defaultDate}
+          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+        />
+      </div>
       <div className="grid grid-cols-2 gap-2">
         <input
           name="startTime"
@@ -259,18 +284,76 @@ export function CreateSlotForm({ defaultDate }: { defaultDate: string }) {
           className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
         />
       </div>
+
+      <label className="flex items-center gap-2 text-sm text-zinc-700">
+        <input
+          type="checkbox"
+          checked={recurring}
+          onChange={(e) => setRecurring(e.target.checked)}
+          className="rounded border-zinc-300"
+        />
+        Créneau récurrent
+      </label>
+
+      {recurring ? (
+        <div className="space-y-3 rounded-lg border border-zinc-100 bg-zinc-50 p-3">
+          <div>
+            <p className="mb-2 text-xs font-medium text-zinc-600">Jours</p>
+            <div className="flex flex-wrap gap-1.5">
+              {weekDays.map((d) => (
+                <label
+                  key={d.value}
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs text-zinc-700"
+                >
+                  <input
+                    type="checkbox"
+                    name="weekdays"
+                    value={d.value}
+                    defaultChecked={d.value >= 1 && d.value <= 5}
+                    className="rounded border-zinc-300"
+                  />
+                  {d.label}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label
+              className="mb-1 block text-xs text-zinc-500"
+              htmlFor="weeksCount"
+            >
+              Pendant (semaines)
+            </label>
+            <input
+              id="weeksCount"
+              name="weeksCount"
+              type="number"
+              min={1}
+              max={12}
+              defaultValue={4}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm"
+            />
+          </div>
+        </div>
+      ) : null}
+
       <input
         name="notes"
         placeholder="Notes (optionnel)"
         className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
       />
       {error ? <p className="text-sm text-rose-700">{error}</p> : null}
+      {success ? <p className="text-sm text-emerald-700">{success}</p> : null}
       <button
         type="submit"
         disabled={pending}
         className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
       >
-        {pending ? "Création…" : "Créer le créneau"}
+        {pending
+          ? "Création…"
+          : recurring
+            ? "Créer les créneaux"
+            : "Créer le créneau"}
       </button>
     </form>
   );

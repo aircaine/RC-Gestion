@@ -181,23 +181,94 @@ export async function createShiftSlotAction(
   const startTime = String(formData.get("startTime") ?? "");
   const endTime = String(formData.get("endTime") ?? "");
   const notes = String(formData.get("notes") ?? "").trim() || null;
+  const recurring = String(formData.get("recurring") ?? "") === "1";
+  const weeksCount = Math.min(
+    12,
+    Math.max(1, Number(formData.get("weeksCount") ?? 1) || 1),
+  );
+  const weekdaysRaw = formData.getAll("weekdays").map(String);
+  const weekdays = weekdaysRaw
+    .map(Number)
+    .filter((d) => Number.isInteger(d) && d >= 1 && d <= 7);
 
   if (!name || !date || !startTime || !endTime) {
     return { ok: false, error: "Nom, date et horaires requis" };
   }
 
-  const [y, m, d] = date.split("-").map(Number);
   const [sh, sm] = startTime.split(":").map(Number);
   const [eh, em] = endTime.split(":").map(Number);
-  const startsAt = new Date(y, m - 1, d, sh, sm, 0, 0);
-  let endsAt = new Date(y, m - 1, d, eh, em, 0, 0);
-  if (endsAt <= startsAt) {
-    endsAt = new Date(endsAt.getTime() + 24 * 60 * 60 * 1000);
+
+  function buildRange(y: number, m: number, d: number) {
+    const startsAt = new Date(y, m - 1, d, sh, sm, 0, 0);
+    let endsAt = new Date(y, m - 1, d, eh, em, 0, 0);
+    if (endsAt <= startsAt) {
+      endsAt = new Date(endsAt.getTime() + 24 * 60 * 60 * 1000);
+    }
+    return { startsAt, endsAt };
   }
 
-  await prisma.shiftSlot.create({
-    data: { name, startsAt, endsAt, notes },
+  if (!recurring) {
+    const [y, m, d] = date.split("-").map(Number);
+    const { startsAt, endsAt } = buildRange(y, m, d);
+    await prisma.shiftSlot.create({
+      data: { name, startsAt, endsAt, notes },
+    });
+    revalidatePath("/manager/planning");
+    return { ok: true };
+  }
+
+  if (weekdays.length === 0) {
+    return { ok: false, error: "Sélectionnez au moins un jour de la semaine" };
+  }
+
+  const startDate = new Date(`${date}T12:00:00`);
+  const endHorizon = new Date(startDate);
+  endHorizon.setDate(endHorizon.getDate() + weeksCount * 7 - 1);
+  endHorizon.setHours(23, 59, 59, 999);
+
+  const toCreate: { name: string; startsAt: Date; endsAt: Date; notes: string | null }[] =
+    [];
+
+  for (
+    let cursor = new Date(startDate);
+    cursor <= endHorizon;
+    cursor.setDate(cursor.getDate() + 1)
+  ) {
+    // JS: 0=Sun..6=Sat → convert to 1=Mon..7=Sun
+    const jsDay = cursor.getDay();
+    const isoDay = jsDay === 0 ? 7 : jsDay;
+    if (!weekdays.includes(isoDay)) continue;
+
+    const y = cursor.getFullYear();
+    const m = cursor.getMonth() + 1;
+    const d = cursor.getDate();
+    const { startsAt, endsAt } = buildRange(y, m, d);
+    toCreate.push({ name, startsAt, endsAt, notes });
+  }
+
+  if (toCreate.length === 0) {
+    return {
+      ok: false,
+      error: "Aucun jour correspondant dans la période choisie",
+    };
+  }
+
+  // Skip duplicates: same name + same startsAt already exists
+  const existing = await prisma.shiftSlot.findMany({
+    where: {
+      name,
+      startsAt: { in: toCreate.map((s) => s.startsAt) },
+    },
+    select: { startsAt: true },
   });
+  const existingKeys = new Set(existing.map((e) => e.startsAt.getTime()));
+  const filtered = toCreate.filter((s) => !existingKeys.has(s.startsAt.getTime()));
+
+  if (filtered.length === 0) {
+    return { ok: false, error: "Ces créneaux existent déjà" };
+  }
+
+  await prisma.shiftSlot.createMany({ data: filtered });
 
   revalidatePath("/manager/planning");
   return { ok: true };
