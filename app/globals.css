@@ -34,8 +34,8 @@
   --color-forest-soft: var(--forest-soft);
   --color-copper: var(--copper);
   --color-copper-soft: var(--copper-soft);
-  --font-sans: var(--font-outfit);
-  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-syne);
 }
 
 @keyframes rc-fade-up {
@@ -65,13 +65,16 @@ body {
     linear-gradient(180deg, rgba(255, 252, 247, 0.5) 0%, transparent 28%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   color: var(--ink);
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  letter-spacing: -0.011em;
 }
 
 h1,
 h2,
 .font-display {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-syne), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
 .rc-page {

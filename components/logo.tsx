@@ -66,13 +66,13 @@ export function Logo({
       {showWordmark ? (
         <span className="leading-none">
           <span
-            className={`font-display block font-semibold tracking-tight ${titleColor} ${s.text}`}
+            className={`font-display block font-bold tracking-tight ${titleColor} ${s.text}`}
           >
             RC-Gestion
           </span>
           {size === "lg" ? (
             <span
-              className={`mt-1.5 block text-sm font-normal tracking-wide ${subtitleColor}`}
+              className={`mt-1.5 block font-sans text-sm font-medium tracking-wide ${subtitleColor}`}
             >
               Gestion restaurant
             </span>
