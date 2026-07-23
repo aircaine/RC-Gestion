@@ -29,6 +29,7 @@ model User {
   passwordHash    String?
   name            String
   role            Role      @default(EMPLOYEE)
+  jobTitle        String?
   active          Boolean   @default(true)
   inviteTokenHash String?   @unique
   inviteExpiresAt DateTime?

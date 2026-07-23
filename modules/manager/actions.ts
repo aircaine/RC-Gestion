@@ -28,6 +28,7 @@ export async function createEmployeeAction(
   const firstName = String(formData.get("firstName") ?? "").trim();
   const lastName = String(formData.get("lastName") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const jobTitle = String(formData.get("jobTitle") ?? "").trim() || null;
 
   if (!firstName || !lastName || !email) {
     return { ok: false, error: "Prénom, nom et email requis" };
@@ -45,6 +46,7 @@ export async function createEmployeeAction(
     data: {
       name,
       email,
+      jobTitle,
       role: "EMPLOYEE",
       active: false,
       passwordHash: null,
@@ -169,6 +171,28 @@ export async function toggleEmployeeActiveAction(
     data: { active: !user.active },
   });
   revalidatePath("/manager/employes");
+  return { ok: true };
+}
+
+export async function updateEmployeeJobTitleAction(
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireManager();
+  const id = String(formData.get("id") ?? "");
+  const jobTitle = String(formData.get("jobTitle") ?? "").trim() || null;
+
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user || user.role !== "EMPLOYEE") {
+    return { ok: false, error: "Employé introuvable" };
+  }
+
+  await prisma.user.update({
+    where: { id },
+    data: { jobTitle },
+  });
+
+  revalidatePath("/manager/employes");
+  revalidatePath("/manager/planning");
   return { ok: true };
 }
 

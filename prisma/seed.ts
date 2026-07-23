@@ -28,24 +28,26 @@ async function main() {
 
   const employee1 = await prisma.user.upsert({
     where: { email: "employe1@rc-gestion.local" },
-    update: {},
+    update: { jobTitle: "Serveur" },
     create: {
       email: "employe1@rc-gestion.local",
       name: "Jean Dupont",
       passwordHash,
       role: "EMPLOYEE",
+      jobTitle: "Serveur",
       active: true,
     },
   });
 
   const employee2 = await prisma.user.upsert({
     where: { email: "employe2@rc-gestion.local" },
-    update: {},
+    update: { jobTitle: "Cuisinière" },
     create: {
       email: "employe2@rc-gestion.local",
       name: "Sophie Martin",
       passwordHash,
       role: "EMPLOYEE",
+      jobTitle: "Cuisinière",
       active: true,
     },
   });

@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
-export type BoardEmployee = { id: string; name: string };
+export type BoardEmployee = { id: string; name: string; jobTitle?: string | null };
 
 export type BoardAssignment = {
   id: string;

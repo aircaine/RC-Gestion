@@ -6,6 +6,7 @@ import {
   createEmployeeAction,
   resendEmployeeInviteAction,
   toggleEmployeeActiveAction,
+  updateEmployeeJobTitleAction,
 } from "@/modules/manager/actions";
 
 export function CreateEmployeeForm() {
@@ -52,6 +53,11 @@ export function CreateEmployeeForm() {
         type="email"
         required
         placeholder="Email"
+        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+      />
+      <input
+        name="jobTitle"
+        placeholder="Rôle (ex. Serveur, Cuisinier…)"
         className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
       />
       {error ? <p className="text-sm text-rose-700">{error}</p> : null}
@@ -115,5 +121,43 @@ export function ToggleEmployeeButton({
     >
       {active ? "Désactiver" : "Activer"}
     </button>
+  );
+}
+
+export function EditJobTitleForm({
+  id,
+  jobTitle,
+}: {
+  id: string;
+  jobTitle: string | null;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <form
+      className="flex items-center gap-1"
+      action={(fd) => {
+        fd.set("id", id);
+        startTransition(async () => {
+          await updateEmployeeJobTitleAction(fd);
+          router.refresh();
+        });
+      }}
+    >
+      <input
+        name="jobTitle"
+        defaultValue={jobTitle ?? ""}
+        placeholder="Rôle"
+        className="w-full min-w-[8rem] rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-700"
+      />
+      <button
+        type="submit"
+        disabled={pending}
+        className="shrink-0 rounded-md border border-zinc-300 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 disabled:opacity-60"
+      >
+        OK
+      </button>
+    </form>
   );
 }

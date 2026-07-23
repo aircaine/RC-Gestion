@@ -47,7 +47,7 @@ export default async function PlanningPage({
         passwordHash: { not: null },
       },
       orderBy: { name: "asc" },
-      select: { id: true, name: true },
+      select: { id: true, name: true, jobTitle: true },
     }),
     prisma.shiftSlot.findMany({
       where: {

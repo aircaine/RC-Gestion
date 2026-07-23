@@ -39,7 +39,12 @@ function EmployeeChip({
       }}
       className="cursor-grab rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-sm font-medium text-zinc-800 shadow-sm active:cursor-grabbing"
     >
-      {employee.name}
+      <span>{employee.name}</span>
+      {employee.jobTitle ? (
+        <span className="mt-0.5 block text-xs font-normal text-zinc-500">
+          {employee.jobTitle}
+        </span>
+      ) : null}
     </div>
   );
 }

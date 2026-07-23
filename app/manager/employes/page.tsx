@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { ManagerNav } from "@/components/nav";
 import {
   CreateEmployeeForm,
+  EditJobTitleForm,
   ToggleEmployeeButton,
 } from "@/components/manager-forms";
 
@@ -32,6 +33,7 @@ export default async function EmployesPage() {
               <thead className="border-b border-zinc-200 bg-zinc-50 text-zinc-500">
                 <tr>
                   <th className="px-4 py-2 font-medium">Nom</th>
+                  <th className="px-4 py-2 font-medium">Rôle</th>
                   <th className="px-4 py-2 font-medium">Email</th>
                   <th className="px-4 py-2 font-medium">Statut</th>
                   <th className="px-4 py-2 font-medium" />
@@ -44,6 +46,9 @@ export default async function EmployesPage() {
                     <tr key={e.id} className="border-b border-zinc-100 last:border-0">
                       <td className="px-4 py-3 font-medium text-zinc-900">
                         {e.name}
+                      </td>
+                      <td className="px-4 py-3">
+                        <EditJobTitleForm id={e.id} jobTitle={e.jobTitle} />
                       </td>
                       <td className="px-4 py-3 text-zinc-600">{e.email}</td>
                       <td className="px-4 py-3">
