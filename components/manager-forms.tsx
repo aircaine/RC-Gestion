@@ -6,6 +6,7 @@ import {
   createEmployeeAction,
   createShiftAction,
   deleteShiftAction,
+  resendEmployeeInviteAction,
   toggleEmployeeActiveAction,
 } from "@/modules/manager/actions";
 
@@ -32,9 +33,18 @@ export function CreateEmployeeForm() {
         });
       }}
     >
-      <h2 className="font-semibold text-zinc-900">Nouvel employé</h2>
+      <h2 className="font-semibold text-zinc-900">Inviter un employé</h2>
+      <p className="text-xs text-zinc-500">
+        Un e-mail lui sera envoyé pour créer son mot de passe.
+      </p>
       <input
-        name="name"
+        name="firstName"
+        required
+        placeholder="Prénom"
+        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+      />
+      <input
+        name="lastName"
         required
         placeholder="Nom"
         className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
@@ -46,26 +56,18 @@ export function CreateEmployeeForm() {
         placeholder="Email"
         className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
       />
-      <input
-        name="password"
-        type="password"
-        required
-        minLength={6}
-        placeholder="Mot de passe (6+)"
-        className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm"
-      />
-      {error ? (
-        <p className="text-sm text-rose-700">{error}</p>
-      ) : null}
+      {error ? <p className="text-sm text-rose-700">{error}</p> : null}
       {success ? (
-        <p className="text-sm text-emerald-700">Employé créé.</p>
+        <p className="text-sm text-emerald-700">
+          Invitation envoyée par e-mail.
+        </p>
       ) : null}
       <button
         type="submit"
         disabled={pending}
         className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-60"
       >
-        {pending ? "Création…" : "Créer"}
+        {pending ? "Envoi…" : "Envoyer l’invitation"}
       </button>
     </form>
   );
@@ -74,12 +76,32 @@ export function CreateEmployeeForm() {
 export function ToggleEmployeeButton({
   id,
   active,
+  pendingInvite,
 }: {
   id: string;
   active: boolean;
+  pendingInvite?: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+
+  if (pendingInvite) {
+    return (
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() =>
+          startTransition(async () => {
+            await resendEmployeeInviteAction(id);
+            router.refresh();
+          })
+        }
+        className="rounded-lg border border-zinc-300 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
+      >
+        Renvoyer l’invitation
+      </button>
+    );
+  }
 
   return (
     <button

@@ -38,24 +38,33 @@ export default async function EmployesPage() {
                 </tr>
               </thead>
               <tbody>
-                {employees.map((e) => (
-                  <tr key={e.id} className="border-b border-zinc-100 last:border-0">
-                    <td className="px-4 py-3 font-medium text-zinc-900">
-                      {e.name}
-                    </td>
-                    <td className="px-4 py-3 text-zinc-600">{e.email}</td>
-                    <td className="px-4 py-3">
-                      {e.active ? (
-                        <span className="text-emerald-700">Actif</span>
-                      ) : (
-                        <span className="text-zinc-400">Inactif</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <ToggleEmployeeButton id={e.id} active={e.active} />
-                    </td>
-                  </tr>
-                ))}
+                {employees.map((e) => {
+                  const pendingInvite = !e.passwordHash;
+                  return (
+                    <tr key={e.id} className="border-b border-zinc-100 last:border-0">
+                      <td className="px-4 py-3 font-medium text-zinc-900">
+                        {e.name}
+                      </td>
+                      <td className="px-4 py-3 text-zinc-600">{e.email}</td>
+                      <td className="px-4 py-3">
+                        {pendingInvite ? (
+                          <span className="text-amber-700">Invitation envoyée</span>
+                        ) : e.active ? (
+                          <span className="text-emerald-700">Actif</span>
+                        ) : (
+                          <span className="text-zinc-400">Inactif</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <ToggleEmployeeButton
+                          id={e.id}
+                          active={e.active}
+                          pendingInvite={pendingInvite}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

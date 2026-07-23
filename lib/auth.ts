@@ -28,7 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { email: parsed.data.email.toLowerCase() },
         });
 
-        if (!user || !user.active) return null;
+        if (!user || !user.active || !user.passwordHash) return null;
 
         const valid = await bcrypt.compare(
           parsed.data.password,

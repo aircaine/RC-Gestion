@@ -1,6 +1,15 @@
 import { LoginForm } from "@/components/login-form";
 
-export default function LoginPage() {
+type SearchParams = Promise<{ activated?: string }>;
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await searchParams;
+  const activated = params.activated === "1";
+
   return (
     <main className="flex min-h-full flex-1 items-center justify-center bg-zinc-50 px-4 py-12">
       <div className="w-full max-w-sm">
@@ -13,6 +22,11 @@ export default function LoginPage() {
           </p>
         </div>
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+          {activated ? (
+            <p className="mb-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+              Compte activé. Connectez-vous avec votre e-mail et mot de passe.
+            </p>
+          ) : null}
           <LoginForm />
         </div>
       </div>

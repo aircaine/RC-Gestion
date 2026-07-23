@@ -12,8 +12,13 @@ export const authConfig = {
       const path = nextUrl.pathname;
 
       const isLogin = path.startsWith("/login");
+      const isInvite = path.startsWith("/invitation");
       const isManager = path.startsWith("/manager");
       const isEmployeeArea = path.startsWith("/heures");
+
+      if (isInvite) {
+        return true;
+      }
 
       if (isLogin) {
         if (isLoggedIn) {
